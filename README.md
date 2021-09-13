@@ -50,6 +50,12 @@ Commands:
   vulnerabilities
 ```
 
+If you're not using `poetry`, you can access the command line interface as follows:
+
+```shell
+$ python3 -m kenna.cli
+```
+
 ### Applications
 
 The following options are available when listing applications.
