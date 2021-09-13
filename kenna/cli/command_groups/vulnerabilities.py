@@ -16,9 +16,6 @@ def vulnerabilities(_):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def count_vulnerabilities(ctx, vulnerability_ids: str, limit: int):
-    """
-    Count matching vulnerabilities.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -35,32 +32,26 @@ def count_vulnerabilities(ctx, vulnerability_ids: str, limit: int):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def get_vulnerabilities(ctx, vulnerability_ids: str, limit: int):
-    """
-    Lookup one or more vulnerabilities.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
-    apps = api.iter_vulnerabilities(
+    vulns = api.iter_vulnerabilities(
         vulnerability_ids=hodgepodge.click.str_to_list_of_int(vulnerability_ids),
         limit=limit,
     )
-    for app in apps:
-        app = hodgepodge.types.dict_to_json(app)
-        click.echo(app)
+    for vuln in vulns:
+        vuln = hodgepodge.types.dict_to_json(vuln)
+        click.echo(vuln)
 
 
 @vulnerabilities.command()
 @click.option('--vulnerability-id', required=True, type=int)
 @click.pass_context
 def get_vulnerability(ctx, vulnerability_id: int):
-    """
-    Lookup a single vulnerability.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
-    app = api.get_vulnerability(vulnerability_id=vulnerability_id)
-    if app:
-        app = hodgepodge.types.dict_to_json(app)
-        click.echo(app)
+    vuln = api.get_vulnerability(vulnerability_id=vulnerability_id)
+    if vuln:
+        vuln = hodgepodge.types.dict_to_json(vuln)
+        click.echo(vuln)

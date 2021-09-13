@@ -16,9 +16,6 @@ def connectors(_):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def count_connectors(ctx, connector_ids: str, limit: int):
-    """
-    Count matching connectors.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -32,9 +29,6 @@ def count_connectors(ctx, connector_ids: str, limit: int):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def get_connectors(ctx, connector_ids: str, limit: int):
-    """
-    Lookup one or more connectors.
-    """
     api = ctx.obj['kenna_api']
     for row in api.iter_connectors(
         connector_ids=hodgepodge.click.str_to_list_of_int(connector_ids),
@@ -48,9 +42,6 @@ def get_connectors(ctx, connector_ids: str, limit: int):
 @click.option('--connector-id', required=True, type=int)
 @click.pass_context
 def get_connector(ctx, connector_id: int):
-    """
-    Lookup a single connector.
-    """
     api = ctx.obj['kenna_api']
     row = api.get_connector(connector_id=connector_id)
     if row:
@@ -64,9 +55,6 @@ def get_connector(ctx, connector_id: int):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def get_connector_runs(ctx, connector_ids: str, connector_run_ids: str, limit: int):
-    """
-    Lookup one or more connector runs.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -84,9 +72,6 @@ def get_connector_runs(ctx, connector_ids: str, connector_run_ids: str, limit: i
 @click.option('--connector-run-id', type=int)
 @click.pass_context
 def get_connector_run(ctx, connector_id: int, connector_run_id: int):
-    """
-    Lookup a single connector run.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 

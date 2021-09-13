@@ -16,9 +16,6 @@ def fixes(_):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def count_fixes(ctx, fix_ids: str, limit: int):
-    """
-    Count matching fixes.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -35,9 +32,6 @@ def count_fixes(ctx, fix_ids: str, limit: int):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def get_fixes(ctx, fix_ids: str, limit: int):
-    """
-    Lookup one or more fixes.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -53,9 +47,6 @@ def get_fixes(ctx, fix_ids: str, limit: int):
 @click.option('--fix-id', required=True, type=int)
 @click.pass_context
 def get_fix(ctx, fix_id: int):
-    """
-    Lookup a single fix.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 

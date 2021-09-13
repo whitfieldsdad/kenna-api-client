@@ -15,7 +15,7 @@ import hodgepodge.requests
 import hodgepodge.requests
 import hodgepodge.time
 import hodgepodge.web
-import kenna.auth
+import kenna.authentication
 import kenna.data.parser
 import kenna.region
 
@@ -33,11 +33,11 @@ class _Kenna:
                  max_retries_on_redirects: int = DEFAULT_MAX_RETRIES_ON_REDIRECT,
                  backoff_factor: float = DEFAULT_BACKOFF_FACTOR):
 
-        self.region = region = kenna.region.verify_region_name(region)
-        self.url = kenna.region.get_regional_endpoint(region)
+        self.region = region = kenna.region.validate_name(region)
+        self.url = kenna.region.get_endpoint(region)
 
         self.session = requests.Session()
-        self.session.headers['X-Risk-Token'] = kenna.auth.validate_api_key(api_key)
+        self.session.headers['X-Risk-Token'] = kenna.authentication.validate_api_key(api_key)
 
         policy = hodgepodge.requests.get_automatic_retry_policy(
             max_retries_on_connection_errors=max_retries_on_connection_errors,
@@ -53,11 +53,11 @@ class _Kenna:
         response.raise_for_status()
         return response.json()
 
-    def iter_pages_by_collection_name(self, collection_name: str):
+    def iter_pages_by_collection_name(self, collection_name: str) -> List[Dict[str, Any]]:
         url = urllib.parse.urljoin(self.url, collection_name)
         return self.iter_pages_by_url(url=url)
 
-    def iter_pages_by_url(self, url: str):
+    def iter_pages_by_url(self, url: str) -> List[Dict[str, Any]]:
         """
         Notes:
         - The default page size is 500 for larger record sets (e.g. assets and vulnerabilities);

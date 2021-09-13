@@ -1,4 +1,5 @@
 from typing import Optional
+from kenna.error import InvalidRegionError
 
 GLOBAL = "global"
 CA = "ca"
@@ -13,15 +14,16 @@ API_ENDPOINTS_BY_REGION = {
 }
 
 ALL_REGIONS = list(API_ENDPOINTS_BY_REGION.keys())
+ALL_ENDPOINTS = list(API_ENDPOINTS_BY_REGION.values())
 
 DEFAULT_REGION = GLOBAL
 
 
-def get_regional_endpoint(region: Optional[str] = None) -> str:
+def get_endpoint(region: Optional[str] = None) -> str:
     return API_ENDPOINTS_BY_REGION[region or DEFAULT_REGION]
 
 
-def verify_region_name(region: str) -> str:
+def validate_name(region: str) -> str:
     if region not in ALL_REGIONS:
-        raise ValueError("Unsupported region: {} (supported: {})".format(region, ALL_REGIONS))
+        raise InvalidRegionError("Unsupported region: {} (supported: {})".format(region, ALL_REGIONS))
     return region

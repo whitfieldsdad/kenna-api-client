@@ -15,9 +15,6 @@ def roles(_):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def count_roles(ctx, role_ids: str, limit: int):
-    """
-    Count matching roles.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -34,9 +31,6 @@ def count_roles(ctx, role_ids: str, limit: int):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def get_roles(ctx, role_ids: str, limit: int):
-    """
-    Lookup one or more roles.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -52,9 +46,6 @@ def get_roles(ctx, role_ids: str, limit: int):
 @click.option('--role-id', required=True, type=int)
 @click.pass_context
 def get_role(ctx, role_id: int):
-    """
-    Lookup a single role.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 

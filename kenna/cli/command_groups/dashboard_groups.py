@@ -16,9 +16,6 @@ def dashboard_groups(_):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def count_dashboard_groups(ctx, dashboard_group_ids: str, limit: int):
-    """
-    Count matching dashboard groups.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -35,9 +32,6 @@ def count_dashboard_groups(ctx, dashboard_group_ids: str, limit: int):
 @click.option('--limit', default=None, type=int)
 @click.pass_context
 def get_dashboard_groups(ctx, dashboard_group_ids: str, limit: int):
-    """
-    Lookup one or more dashboard groups.
-    """
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
@@ -53,9 +47,6 @@ def get_dashboard_groups(ctx, dashboard_group_ids: str, limit: int):
 @click.option('--dashboard-group-id', required=True, type=int)
 @click.pass_context
 def get_dashboard_group(ctx, dashboard_group_id: int):
-    """
-    Lookup a single dashboard group.
-    """
     api = ctx.obj['kenna_api']
     group = api.get_dashboard_group(dashboard_group_id=dashboard_group_id)
     if group:

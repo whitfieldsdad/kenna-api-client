@@ -8,3 +8,7 @@ class MissingCredentialsError(_CredentialError):
 
 class InvalidCredentialsError(_CredentialError):
     pass
+
+
+class InvalidRegionError(ValueError):
+    pass
