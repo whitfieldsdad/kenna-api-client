@@ -1,15 +1,34 @@
-# An API client for Kenna
+# Kenna
 
-This API client will allow you to interact with Kenna.
+> An API client for Kenna Security
+
+![Kenna](https://raw.githubusercontent.com/whitfieldsdad/images/main/kenna-hero.png)
 
 ## Installation
 
-```shell
+To install from source:
 
+```shell
+$ git clone git@github.com:whitfieldsdad/python-kenna-api-client.git
+$ make install
 ```
 
-## Testing
+## Tutorials
 
-## Examples
+### List applications
 
-### Grant one or more users access to Kenna
+### List assets
+
+### List connectors
+
+### List connector runs
+
+### List dashboard groups
+
+### List fixes
+
+### List roles
+
+### List users
+
+### List vulnerabilities
