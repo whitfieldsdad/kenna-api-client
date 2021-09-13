@@ -6,11 +6,24 @@
 
 ## Installation
 
-To install from source:
+To install using `pip`:
+
+```shell
+$ pip install kenna
+```
+
+To install from source using `poetry`
 
 ```shell
 $ git clone git@github.com:whitfieldsdad/python-kenna-api-client.git
 $ make install
+```
+
+To install from source using `setup.py`:
+
+```shell
+$ git clone git@github.com:whitfieldsdad/python-kenna-api-client.git
+$ python3 setup.py install
 ```
 
 ## Tutorials
