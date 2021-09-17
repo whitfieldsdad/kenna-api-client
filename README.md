@@ -51,6 +51,7 @@ Commands:
   connectors
   dashboard-groups
   fixes
+  roles
   users
   vulnerabilities
 ```
