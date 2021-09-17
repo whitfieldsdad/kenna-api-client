@@ -19,6 +19,10 @@ ALL_ENDPOINTS = list(API_ENDPOINTS_BY_REGION.values())
 DEFAULT_REGION = GLOBAL
 
 
+def get_default_endpoint() -> str:
+    return get_endpoint(region=DEFAULT_REGION)
+
+
 def get_endpoint(region: Optional[str] = None) -> str:
     return API_ENDPOINTS_BY_REGION[region or DEFAULT_REGION]
 

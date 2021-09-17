@@ -5,10 +5,11 @@ from kenna.api import Kenna
 from kenna.cli.command_groups.applications import applications
 from kenna.cli.command_groups.assets import assets
 from kenna.cli.command_groups.connectors import connectors
+from kenna.cli.command_groups.connector_runs import connector_runs
 from kenna.cli.command_groups.dashboard_groups import dashboard_groups
 from kenna.cli.command_groups.fixes import fixes
-from kenna.cli.command_groups.roles import roles
 from kenna.cli.command_groups.users import users
+from kenna.cli.command_groups.roles import roles
 from kenna.cli.command_groups.vulnerabilities import vulnerabilities
 from kenna.region import DEFAULT_REGION
 
@@ -26,10 +27,11 @@ COMMAND_GROUPS = [
     applications,
     assets,
     connectors,
+    connector_runs,
     dashboard_groups,
     fixes,
-    roles,
     users,
+    roles,
     vulnerabilities,
 ]
 for command_group in COMMAND_GROUPS:

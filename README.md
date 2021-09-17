@@ -16,7 +16,7 @@ To install from source using `poetry`
 
 ```shell
 $ git clone git@github.com:whitfieldsdad/python-kenna-api-client.git
-$ make install
+$ poetry install
 ```
 
 To install from source using `setup.py`:
@@ -25,6 +25,11 @@ To install from source using `setup.py`:
 $ git clone git@github.com:whitfieldsdad/python-kenna-api-client.git
 $ python3 setup.py install
 ```
+
+## Required environment variables
+
+The following environment variables are required:
+- `$KENNA_API_KEY`
 
 ## Tutorials
 
@@ -42,10 +47,10 @@ Options:
 Commands:
   applications
   assets
+  connector-runs
   connectors
   dashboard-groups
   fixes
-  roles
   users
   vulnerabilities
 ```
@@ -65,14 +70,14 @@ $ poetry run kenna applications
 Usage: kenna applications [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  --help  Show this message and exit.
+  --application-ids TEXT
+  --application-names TEXT
+  --help                    Show this message and exit.
 
 Commands:
   count-applications
-  get-application
   get-application-ids
   get-application-names
-  get-application-owners
   get-applications
 ```
 
@@ -85,15 +90,12 @@ $ poetry run kenna assets
 Usage: kenna assets [OPTIONS] COMMAND [ARGS]...
 
 Options:
-  --help  Show this message and exit.
+  --asset-ids TEXT
+  --asset-names TEXT
+  --help              Show this message and exit.
 
 Commands:
   count-assets
-  get-asset
-  get-asset-hostnames
-  get-asset-ipv4-addresses
-  get-asset-ipv6-addresses
-  get-asset-tags
   get-assets
 ```
 
@@ -110,9 +112,6 @@ Options:
 
 Commands:
   count-connectors
-  get-connector
-  get-connector-run
-  get-connector-runs
   get-connectors
 ```
 
@@ -129,7 +128,6 @@ Options:
 
 Commands:
   count-dashboard-groups
-  get-dashboard-group
   get-dashboard-groups
 ```
 
@@ -146,7 +144,6 @@ Options:
 
 Commands:
   count-fixes
-  get-fix
   get-fixes
 ```
 
@@ -163,25 +160,7 @@ Options:
 
 Commands:
   count-users
-  get-user
   get-users
-```
-
-### Roles
-
-The following options are available when listing roles:
-
-```shell
-$ poetry run kenna roles
-Usage: kenna roles [OPTIONS] COMMAND [ARGS]...
-
-Options:
-  --help  Show this message and exit.
-
-Commands:
-  count-roles
-  get-role
-  get-roles
 ```
 
 ### Vulnerabilities
@@ -197,6 +176,6 @@ Options:
 
 Commands:
   count-vulnerabilities
+  get-cves
   get-vulnerabilities
-  get-vulnerability
 ```

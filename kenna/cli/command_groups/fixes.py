@@ -3,54 +3,49 @@ from kenna.api import Kenna
 import click
 import hodgepodge.types
 import hodgepodge.click
+import json
 
 
 @click.group()
+@click.option('--fix-ids')
+@click.option('--fix-names')
 @click.pass_context
-def fixes(_):
-    pass
+def fixes(ctx, fix_ids: str, fix_names: str):
+    api = ctx.obj['kenna_api']
+    assert isinstance(api, Kenna)
+
+    ctx.obj.update({
+        'fix_ids': hodgepodge.click.str_to_list_of_int(fix_ids),
+        'fix_names': hodgepodge.click.str_to_list_of_str(fix_names),
+    })
 
 
 @fixes.command()
-@click.option('--fix-ids')
-@click.option('--limit', default=None, type=int)
 @click.pass_context
-def count_fixes(ctx, fix_ids: str, limit: int):
+def count_fixes(ctx):
     api = ctx.obj['kenna_api']
     assert isinstance(api, Kenna)
 
     rows = api.iter_fixes(
-        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
+        fix_ids=ctx.obj['fix_ids'],
+        fix_names=ctx.obj['fix_names'],
+    )
+    n = sum(1 for _ in rows)
+    click.echo(n)
+
+
+@fixes.command()
+@click.option('--limit', type=int)
+@click.pass_context
+def get_fixes(ctx, limit):
+    api = ctx.obj['kenna_api']
+    assert isinstance(api, Kenna)
+
+    rows = api.iter_fixes(
+        fix_ids=ctx.obj['fix_ids'],
+        fix_names=ctx.obj['fix_names'],
         limit=limit,
     )
-    count = sum(1 for _ in rows)
-    click.echo(count)
-
-
-@fixes.command()
-@click.option('--fix-ids')
-@click.option('--limit', default=None, type=int)
-@click.pass_context
-def get_fixes(ctx, fix_ids: str, limit: int):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    for fix in api.iter_fixes(
-        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
-        limit=limit,
-    ):
-        fix = hodgepodge.types.dict_to_json(fix)
-        click.echo(fix)
-
-
-@fixes.command()
-@click.option('--fix-id', required=True, type=int)
-@click.pass_context
-def get_fix(ctx, fix_id: int):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    fix = api.get_fix(fix_id=fix_id)
-    if fix:
-        fix = hodgepodge.types.dict_to_json(fix)
-        click.echo(fix)
+    for row in rows:
+        row = hodgepodge.types.dict_to_json(row)
+        click.echo(row)

@@ -118,7 +118,7 @@ python-versions = "*"
 
 [[package]]
 name = "hodgepodge"
-version = "0.1.7"
+version = "0.1.9"
 description = ""
 category = "main"
 optional = false
@@ -162,7 +162,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 
 [[package]]
 name = "more-itertools"
-version = "8.9.0"
+version = "8.10.0"
 description = "More routines for operating on iterables, beyond itertools"
 category = "dev"
 optional = false
@@ -493,8 +493,8 @@ dawg = [
     {file = "DAWG-0.8.0.tar.gz", hash = "sha256:34881e06278d4a54cf0b402c0c8b587bef0caa78f0eee595adc7a2aa530e48ce"},
 ]
 hodgepodge = [
-    {file = "hodgepodge-0.1.7-py3-none-any.whl", hash = "sha256:7d27c1f4044eb1f58a777a9f8c7e38cd471b320fb8c6dfb3dc102ece7d5a59ef"},
-    {file = "hodgepodge-0.1.7.tar.gz", hash = "sha256:737bc18c431c4a5a20e0c0f07adc0230396ee530dd4d40db17f392d4654cad9f"},
+    {file = "hodgepodge-0.1.9-py3-none-any.whl", hash = "sha256:df5c3cd23ae8e918a15d77ff5978a151931ad02e20dfa25b4d3f1f4aca16fc23"},
+    {file = "hodgepodge-0.1.9.tar.gz", hash = "sha256:5d2ca3f6c22259999da46f0bafca8dbb910b5e02cd99fb89ec22e4e27c70ac43"},
 ]
 idna = [
     {file = "idna-2.8-py2.py3-none-any.whl", hash = "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"},
@@ -505,8 +505,8 @@ importlib-metadata = [
     {file = "importlib_metadata-4.8.1.tar.gz", hash = "sha256:f284b3e11256ad1e5d03ab86bb2ccd6f5339688ff17a4d797a0fe7df326f23b1"},
 ]
 more-itertools = [
-    {file = "more-itertools-8.9.0.tar.gz", hash = "sha256:8c746e0d09871661520da4f1241ba6b908dc903839733c8203b552cffaf173bd"},
-    {file = "more_itertools-8.9.0-py3-none-any.whl", hash = "sha256:70401259e46e216056367a0a6034ee3d3f95e0bf59d3aa6a4eb77837171ed996"},
+    {file = "more-itertools-8.10.0.tar.gz", hash = "sha256:1debcabeb1df793814859d64a81ad7cb10504c24349368ccf214c664c474f41f"},
+    {file = "more_itertools-8.10.0-py3-none-any.whl", hash = "sha256:56ddac45541718ba332db05f464bebfb0768110111affd27f66e0051f276fa43"},
 ]
 packaging = [
     {file = "packaging-21.0-py3-none-any.whl", hash = "sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14"},
