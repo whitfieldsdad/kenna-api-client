@@ -76,8 +76,6 @@ Options:
 
 Commands:
   count-applications
-  get-application-ids
-  get-application-names
   get-applications
 ```
 
