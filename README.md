@@ -26,14 +26,70 @@ $ git clone git@github.com:whitfieldsdad/python-kenna-api-client.git
 $ python3 setup.py install
 ```
 
-## Required environment variables
+## Authentication
 
-The following environment variables are required:
-- `$KENNA_API_KEY`
+You have two options when it comes to providing your Kenna API key:
+- Set the value of the `KENNA_API_KEY` environment variable to your Kenna API key (recommended); or
+- Provide your API key on the command line.
 
-## Tutorials
+```shell
+$ poetry run kenna
+Usage: kenna [OPTIONS] COMMAND [ARGS]...
 
-The following general options are available:
+Options:
+  --api-key TEXT
+  --region TEXT
+  --help          Show this message and exit.
+...
+```
+
+### Makefile targets
+
+#### `make install`
+
+Install the module using `poetry`.
+
+#### `make clean`
+
+Remove `dist/`.
+
+#### `make update`
+
+Update the project's dependencies using `poetry`, overwrite `requirements.txt`, show the updated dependency tree.
+
+#### `make unit-test`
+
+Run the unit tests (fast).
+
+#### `make integration-test`
+
+Run the integration tests (slow).
+
+Tests will be skipped unless the `$KENNA_API_KEY` environment variable is set.
+
+#### `make test`
+
+Combines the `unit-test` and `integration-test` targets.
+
+#### `make coverage`
+
+Measure code coverage and write a code coverage report to `htmlcov/index.html`.
+
+#### `make view-coverage`
+
+Open the generated code coverage report from `htmlcov/index.html` in your default web browser.
+
+#### `make build`
+
+Create a source distribution tarball and wheel file for this package.
+
+#### `make release`
+
+Release the source distribution tarball and wheel file in `dist/` to [PyPi](https://pypi.org/project/kenna/).
+
+## Tutorials (CLI)
+
+The following options are available:
 
 ```shell
 $ poetry run kenna
