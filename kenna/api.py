@@ -301,7 +301,7 @@ class Kenna:
 
                 i += 1
                 if limit and i >= limit:
-                    break
+                    return
 
     def get_connector_run(
             self,
