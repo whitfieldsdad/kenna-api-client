@@ -1,54 +1,42 @@
-from kenna.api import Kenna
-
 import click
-import hodgepodge.types
+
 import hodgepodge.click
+import hodgepodge.types
 
 
 @click.group()
 @click.option('--connector-ids')
 @click.option('--connector-names')
 @click.option('--connector-run-ids')
+@click.option('--min-connector-run-start-time')
+@click.option('--max-connector-run-start-time')
+@click.option('--min-connector-run-end-time')
+@click.option('--max-connector-run-end-time')
 @click.pass_context
-def connector_runs(ctx, connector_ids: str, connector_names: str, connector_run_ids: str):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
+def connector_runs(
+        ctx: click.Context,
+        connector_ids: str,
+        connector_names: str,
+        connector_run_ids: str,
+        min_connector_run_start_time: str,
+        max_connector_run_start_time: str,
+        min_connector_run_end_time: str,
+        max_connector_run_end_time: str):
 
-    ctx.obj.update({
+    ctx.obj['kwargs'] = {
         'connector_ids': hodgepodge.click.str_to_list_of_int(connector_ids),
         'connector_names': hodgepodge.click.str_to_list_of_str(connector_names),
-        'connector_run_ids': hodgepodge.click.str_to_list_of_str(connector_run_ids),
-    })
-
-
-@connector_runs.command()
-@click.pass_context
-def count_connector_runs(ctx):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    rows = api.iter_connector_runs(
-        connector_ids=ctx.obj['connector_ids'],
-        connector_names=ctx.obj['connector_names'],
-        connector_run_ids=ctx.obj['connector_run_ids'],
-    )
-    n = sum(1 for _ in rows)
-    click.echo(n)
+        'connector_run_ids': hodgepodge.click.str_to_list_of_int(connector_run_ids),
+        'min_connector_run_start_time': min_connector_run_start_time,
+        'max_connector_run_start_time': max_connector_run_start_time,
+        'min_connector_run_end_time': min_connector_run_end_time,
+        'max_connector_run_end_time': max_connector_run_end_time,
+    }
 
 
 @connector_runs.command()
 @click.option('--limit', type=int)
 @click.pass_context
-def get_connector_runs(ctx, limit):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    rows = api.iter_connector_runs(
-        connector_ids=ctx.obj['connector_ids'],
-        connector_names=ctx.obj['connector_names'],
-        connector_run_ids=ctx.obj['connector_run_ids'],
-        limit=limit,
-    )
-    for row in rows:
-        row = hodgepodge.types.dict_to_json(row)
-        click.echo(row)
+def get_connector_runs(ctx: click.Context, limit: int):
+    rows = ctx.obj['kenna_api'].iter_connector_runs(**ctx.obj['kwargs'], limit=limit)
+    hodgepodge.click.echo_as_jsonl(rows)

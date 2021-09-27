@@ -1,68 +1,93 @@
-from kenna.api import Kenna
-
 import click
-import hodgepodge.types
+
 import hodgepodge.click
-import json
+import hodgepodge.types
 
 
 @click.group()
 @click.option('--vulnerability-ids')
-@click.option('--vulnerability-names')
+@click.option('--cve-ids')
+@click.option('--fix-ids')
+@click.option('--fix-names')
+@click.option('--fix-vendors')
+@click.option('--asset-ids')
+@click.option('--asset-hostnames')
+@click.option('--asset-ip-addresses')
+@click.option('--asset-mac-addresses')
+@click.option('--asset-group-ids')
+@click.option('--asset-group-names')
+@click.option('--asset-tags')
+@click.option('--min-vulnerability-risk-meter-score', type=int)
+@click.option('--max-vulnerability-risk-meter-score', type=int)
+@click.option('--min-vulnerability-first-seen-time')
+@click.option('--max-vulnerability-first-seen-time')
+@click.option('--min-vulnerability-last-seen-time')
+@click.option('--max-vulnerability-last-seen-time')
+@click.option('--min-cve-publish-time')
+@click.option('--max-cve-publish-time')
+@click.option('--min-patch-publish-time')
+@click.option('--max-patch-publish-time')
+@click.option('--min-patch-due-date')
+@click.option('--max-patch-due-date')
 @click.pass_context
-def vulnerabilities(ctx, vulnerability_ids: str, vulnerability_names: str):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
+def vulnerabilities(
+        ctx: click.Context,
+        vulnerability_ids: str,
+        cve_ids: str,
+        fix_ids: str,
+        fix_names: str,
+        fix_vendors: str,
+        asset_ids: str,
+        asset_hostnames: str,
+        asset_ip_addresses: str,
+        asset_mac_addresses: str,
+        asset_group_ids: str,
+        asset_group_names: str,
+        asset_tags: str,
+        min_vulnerability_risk_meter_score: int,
+        max_vulnerability_risk_meter_score: int,
+        min_vulnerability_first_seen_time: str,
+        max_vulnerability_first_seen_time: str,
+        min_vulnerability_last_seen_time: str,
+        max_vulnerability_last_seen_time: str,
+        min_cve_publish_time: str,
+        max_cve_publish_time: str,
+        min_patch_publish_time: str,
+        max_patch_publish_time: str,
+        min_patch_due_date: str,
+        max_patch_due_date: str):
 
-    ctx.obj.update({
+    ctx.obj['kwargs'] = {
         'vulnerability_ids': hodgepodge.click.str_to_list_of_int(vulnerability_ids),
-        'vulnerability_names': hodgepodge.click.str_to_list_of_str(vulnerability_names),
-    })
-
-
-@vulnerabilities.command()
-@click.pass_context
-def count_vulnerabilities(ctx):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    rows = api.iter_vulnerabilities(
-        vulnerability_ids=ctx.obj['vulnerability_ids'],
-        vulnerability_names=ctx.obj['vulnerability_names'],
-    )
-    n = sum(1 for _ in rows)
-    click.echo(n)
-
-
-@vulnerabilities.command()
-@click.option('--limit', type=int)
-@click.pass_context
-def get_vulnerabilities(ctx, limit):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    rows = api.iter_vulnerabilities(
-        vulnerability_ids=ctx.obj['vulnerability_ids'],
-        vulnerability_names=ctx.obj['vulnerability_names'],
-        limit=limit,
-    )
-    for row in rows:
-        row = hodgepodge.types.dict_to_json(row)
-        click.echo(row)
+        'cve_ids': hodgepodge.click.str_to_list_of_str(cve_ids),
+        'fix_ids': hodgepodge.click.str_to_list_of_int(fix_ids),
+        'fix_names': hodgepodge.click.str_to_list_of_str(fix_names),
+        'fix_vendors': hodgepodge.click.str_to_list_of_str(fix_vendors),
+        'asset_ids': hodgepodge.click.str_to_list_of_int(asset_ids),
+        'asset_hostnames': hodgepodge.click.str_to_list_of_str(asset_hostnames),
+        'asset_ip_addresses': hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
+        'asset_mac_addresses': hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
+        'asset_group_ids': hodgepodge.click.str_to_list_of_int(asset_group_ids),
+        'asset_group_names': hodgepodge.click.str_to_list_of_str(asset_group_names),
+        'asset_tags': hodgepodge.click.str_to_list_of_str(asset_tags),
+        'min_vulnerability_risk_meter_score': min_vulnerability_risk_meter_score,
+        'max_vulnerability_risk_meter_score': max_vulnerability_risk_meter_score,
+        'min_vulnerability_first_seen_time': min_vulnerability_first_seen_time,
+        'max_vulnerability_first_seen_time': max_vulnerability_first_seen_time,
+        'min_vulnerability_last_seen_time': min_vulnerability_last_seen_time,
+        'max_vulnerability_last_seen_time': max_vulnerability_last_seen_time,
+        'min_cve_publish_time': min_cve_publish_time,
+        'max_cve_publish_time': max_cve_publish_time,
+        'min_patch_publish_time': min_patch_publish_time,
+        'max_patch_publish_time': max_patch_publish_time,
+        'min_patch_due_date': min_patch_due_date,
+        'max_patch_due_date': max_patch_due_date,
+    }
 
 
 @vulnerabilities.command()
 @click.option('--limit', type=int)
 @click.pass_context
-def get_cves(ctx, limit):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    rows = api.iter_cves(
-        vulnerability_ids=ctx.obj['vulnerability_ids'],
-        vulnerability_names=ctx.obj['vulnerability_names'],
-        limit=limit,
-    )
-    for row in rows:
-        row = hodgepodge.types.dict_to_json(row)
-        click.echo(row)
+def get_vulnerabilities(ctx: click.Context, limit: int):
+    rows = ctx.obj['kenna_api'].iter_vulnerabilities(**ctx.obj['kwargs'], limit=limit)
+    hodgepodge.click.echo_as_jsonl(rows)

@@ -1,7 +1,7 @@
 [[package]]
 name = "antlr4-python3-runtime"
-version = "4.8"
-description = "ANTLR 4.8 runtime for Python 3.7"
+version = "4.9.2"
+description = "ANTLR 4.9.2 runtime for Python 3.7"
 category = "main"
 optional = false
 python-versions = "*"
@@ -118,7 +118,7 @@ python-versions = "*"
 
 [[package]]
 name = "hodgepodge"
-version = "0.1.9"
+version = "0.3.5"
 description = ""
 category = "main"
 optional = false
@@ -130,6 +130,7 @@ click = ">=7.0,<8.0"
 dacite = ">=1.6.0,<1.7.0"
 DAWG = ">=0.8.0,<0.9.0"
 python-dateutil = ">=2.7.3,<2.8.0"
+redis = ">=3.5.3,<4.0.0"
 requests = ">=2.22.0,<2.23.0"
 stix2 = ">=3.0.0,<3.1.0"
 taxii2-client = ">=2.3.0,<3.0.0"
@@ -252,6 +253,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "redis"
+version = "3.5.3"
+description = "Python client for Redis key-value store"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.extras]
+hiredis = ["hiredis (>=0.1.3)"]
+
+[[package]]
 name = "requests"
 version = "2.22.0"
 description = "Python HTTP for Humans."
@@ -305,14 +317,14 @@ taxii = ["taxii2-client (>=2.3.0)"]
 
 [[package]]
 name = "stix2-patterns"
-version = "1.3.2"
+version = "1.2.1"
 description = "Validate STIX 2 Patterns."
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-antlr4-python3-runtime = {version = ">=4.8.0,<4.9.0", markers = "python_version >= \"3\""}
+antlr4-python3-runtime = {version = ">=4.7", markers = "python_version >= \"3\""}
 six = "*"
 
 [package.extras]
@@ -389,11 +401,11 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.0,<4"
-content-hash = "b065e0c8191e33c802b69ebd3ec03ed4f867f178268e860d449144d4c107e8e2"
+content-hash = "8e6e28d4c0ff1230ed11013c761acdfc3e5c4d39c8bcb0aef2a7f6f98610cc17"
 
 [metadata.files]
 antlr4-python3-runtime = [
-    {file = "antlr4-python3-runtime-4.8.tar.gz", hash = "sha256:15793f5d0512a372b4e7d2284058ad32ce7dd27126b105fb0b2245130445db33"},
+    {file = "antlr4-python3-runtime-4.9.2.tar.gz", hash = "sha256:31f5abdc7faf16a1a6e9bf2eb31565d004359b821b09944436a34361929ae85a"},
 ]
 arrow = [
     {file = "arrow-1.0.3-py3-none-any.whl", hash = "sha256:3515630f11a15c61dcb4cdd245883270dd334c83f3e639824e65a4b79cc48543"},
@@ -493,8 +505,8 @@ dawg = [
     {file = "DAWG-0.8.0.tar.gz", hash = "sha256:34881e06278d4a54cf0b402c0c8b587bef0caa78f0eee595adc7a2aa530e48ce"},
 ]
 hodgepodge = [
-    {file = "hodgepodge-0.1.9-py3-none-any.whl", hash = "sha256:df5c3cd23ae8e918a15d77ff5978a151931ad02e20dfa25b4d3f1f4aca16fc23"},
-    {file = "hodgepodge-0.1.9.tar.gz", hash = "sha256:5d2ca3f6c22259999da46f0bafca8dbb910b5e02cd99fb89ec22e4e27c70ac43"},
+    {file = "hodgepodge-0.3.5-py3-none-any.whl", hash = "sha256:d8d6a5f4cf011c39807130e6dd981789f3a7bc53945ccdd733000c605b1682e6"},
+    {file = "hodgepodge-0.3.5.tar.gz", hash = "sha256:24375931549fd9f5c61b14eb63ac807eb026526ba757548c73f4ca6fac2bee9a"},
 ]
 idna = [
     {file = "idna-2.8-py2.py3-none-any.whl", hash = "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"},
@@ -535,6 +547,10 @@ python-dateutil = [
 pytz = [
     {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},
     {file = "pytz-2021.1.tar.gz", hash = "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"},
+]
+redis = [
+    {file = "redis-3.5.3-py2.py3-none-any.whl", hash = "sha256:432b788c4530cfe16d8d943a09d40ca6c16149727e4afe8c2c9d5580c59d9f24"},
+    {file = "redis-3.5.3.tar.gz", hash = "sha256:0e7e0cfca8660dea8b7d5cd8c4f6c5e29e11f31158c0b0ae91a397f00e5a05a2"},
 ]
 requests = [
     {file = "requests-2.22.0-py2.py3-none-any.whl", hash = "sha256:9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"},
@@ -596,8 +612,7 @@ stix2 = [
     {file = "stix2-3.0.0-py2.py3-none-any.whl", hash = "sha256:b9b2200e5c429a0a49d67c8902638d2f97df2ba4321e15dde067c5cb80c9e8e1"},
 ]
 stix2-patterns = [
-    {file = "stix2-patterns-1.3.2.tar.gz", hash = "sha256:174fe5302d2c3223205033af987754132a9ea45a9f8e08aefafbe0549c889ea4"},
-    {file = "stix2_patterns-1.3.2-py2.py3-none-any.whl", hash = "sha256:bc46cc4eba44b76a17eab7a3ff67f35203543cdb918ab24c1ebd58403fa27992"},
+    {file = "stix2_patterns-1.2.1-py2.py3-none-any.whl", hash = "sha256:a23c707e8043a7933f2858adb02e58f3bace510d331e4b7dd4f1c3cceb6c43b6"},
 ]
 taxii2-client = [
     {file = "taxii2-client-2.3.0.tar.gz", hash = "sha256:fb3bf895e2eaff3cd08bb7aad75c9d30682ffc00b9f3add77de3a67dc6b895a3"},

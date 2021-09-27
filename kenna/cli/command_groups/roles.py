@@ -1,51 +1,57 @@
-from kenna.api import Kenna
-
 import click
-import hodgepodge.types
+
 import hodgepodge.click
-import json
+import hodgepodge.types
 
 
 @click.group()
 @click.option('--role-ids')
 @click.option('--role-names')
+@click.option('--role-types')
+@click.option('--role-access-levels')
+@click.option('--role-custom-permissions')
+@click.option('--user-ids')
+@click.option('--user-email-addresses')
+@click.option('--user-names')
+@click.option('--min-role-create-time')
+@click.option('--max-role-create-time')
+@click.option('--min-role-last-update-time')
+@click.option('--max-role-last-update-time')
 @click.pass_context
-def roles(ctx, role_ids: str, role_names: str):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
+def roles(
+        ctx: click.Context,
+        role_ids: str,
+        role_names: str,
+        role_types: str,
+        role_access_levels: str,
+        role_custom_permissions: str,
+        user_ids: str,
+        user_email_addresses: str,
+        user_names: str,
+        min_role_create_time: str,
+        max_role_create_time: str,
+        min_role_last_update_time: str,
+        max_role_last_update_time: str):
 
-    ctx.obj.update({
+    ctx.obj['kwargs'] = {
         'role_ids': hodgepodge.click.str_to_list_of_int(role_ids),
         'role_names': hodgepodge.click.str_to_list_of_str(role_names),
-    })
-
-
-@roles.command()
-@click.pass_context
-def count_roles(ctx):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    rows = api.iter_roles(
-        role_ids=ctx.obj['role_ids'],
-        role_names=ctx.obj['role_names'],
-    )
-    n = sum(1 for _ in rows)
-    click.echo(n)
+        'role_types': hodgepodge.click.str_to_list_of_str(role_types),
+        'role_access_levels': hodgepodge.click.str_to_list_of_str(role_access_levels),
+        'role_custom_permissions': hodgepodge.click.str_to_list_of_str(role_custom_permissions),
+        'user_ids': hodgepodge.click.str_to_list_of_int(user_ids),
+        'user_email_addresses': hodgepodge.click.str_to_list_of_str(user_email_addresses),
+        'user_names': hodgepodge.click.str_to_list_of_str(user_names),
+        'min_role_create_time': min_role_create_time,
+        'max_role_create_time': max_role_create_time,
+        'min_role_last_update_time': min_role_last_update_time,
+        'max_role_last_update_time': max_role_last_update_time,
+    }
 
 
 @roles.command()
 @click.option('--limit', type=int)
 @click.pass_context
-def get_roles(ctx, limit):
-    api = ctx.obj['kenna_api']
-    assert isinstance(api, Kenna)
-
-    rows = api.iter_roles(
-        role_ids=ctx.obj['role_ids'],
-        role_names=ctx.obj['role_names'],
-        limit=limit,
-    )
-    for row in rows:
-        row = hodgepodge.types.dict_to_json(row)
-        click.echo(row)
+def get_roles(ctx: click.Context, limit: int):
+    rows = ctx.obj['kenna_api'].iter_roles(**ctx.obj['kwargs'], limit=limit)
+    hodgepodge.click.echo_as_jsonl(rows)
