@@ -1,10 +1,19 @@
+from kenna.api import Kenna
+
 import click
 
 import hodgepodge.click
 import hodgepodge.types
+import hodgepodge.time
 
 
 @click.group()
+@click.pass_context
+def assets(_):
+    pass
+
+
+@assets.command()
 @click.option('--asset-ids')
 @click.option('--asset-group-ids')
 @click.option('--asset-group-names')
@@ -20,8 +29,9 @@ import hodgepodge.types
 @click.option('--max-asset-last-seen-time')
 @click.option('--min-asset-last-boot-time')
 @click.option('--max-asset-last-boot-time')
+@click.option('--limit', type=int)
 @click.pass_context
-def assets(
+def get_assets(
         ctx: click.Context,
         asset_ids: str,
         asset_group_ids: str,
@@ -37,30 +47,26 @@ def assets(
         min_asset_last_seen_time: str,
         max_asset_last_seen_time: str,
         min_asset_last_boot_time: str,
-        max_asset_last_boot_time: str):
+        max_asset_last_boot_time: str,
+        limit: int):
 
-    ctx.obj['kwargs'] = {
-        'asset_ids': hodgepodge.click.str_to_list_of_int(asset_ids),
-        'asset_group_ids': hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        'asset_group_names': hodgepodge.click.str_to_list_of_str(asset_group_names),
-        'asset_tags': hodgepodge.click.str_to_list_of_str(asset_tags),
-        'asset_hostnames': hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        'asset_ip_addresses': hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        'asset_mac_addresses': hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
-        'min_asset_risk_meter_score': min_asset_risk_meter_score,
-        'max_asset_risk_meter_score': max_asset_risk_meter_score,
-        'min_asset_first_seen_time': min_asset_first_seen_time,
-        'max_asset_first_seen_time': max_asset_first_seen_time,
-        'min_asset_last_seen_time': min_asset_last_seen_time,
-        'max_asset_last_seen_time': max_asset_last_seen_time,
-        'min_asset_last_boot_time': min_asset_last_boot_time,
-        'max_asset_last_boot_time': max_asset_last_boot_time,
-    }
-
-
-@assets.command()
-@click.option('--limit', type=int)
-@click.pass_context
-def get_assets(ctx: click.Context, limit: int):
-    rows = ctx.obj['kenna_api'].iter_assets(**ctx.obj['kwargs'], limit=limit)
-    hodgepodge.click.echo_as_jsonl(rows)
+    api = Kenna(**ctx.obj['kenna']['config'])
+    for row in api.iter_assets(
+        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
+        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
+        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
+        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
+        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
+        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
+        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
+        min_asset_risk_meter_score=min_asset_risk_meter_score,
+        max_asset_risk_meter_score=max_asset_risk_meter_score,
+        min_asset_first_seen_time=hodgepodge.time.to_datetime(min_asset_first_seen_time),
+        max_asset_first_seen_time=hodgepodge.time.to_datetime(max_asset_first_seen_time),
+        min_asset_last_seen_time=hodgepodge.time.to_datetime(min_asset_last_seen_time),
+        max_asset_last_seen_time=hodgepodge.time.to_datetime(max_asset_last_seen_time),
+        min_asset_last_boot_time=hodgepodge.time.to_datetime(min_asset_last_boot_time),
+        max_asset_last_boot_time=hodgepodge.time.to_datetime(max_asset_last_boot_time),
+        limit=limit,
+    ):
+        hodgepodge.click.echo_as_json(row)

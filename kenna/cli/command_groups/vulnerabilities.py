@@ -1,10 +1,19 @@
+from kenna.api import Kenna
+
 import click
 
+import hodgepodge.time
 import hodgepodge.click
 import hodgepodge.types
 
 
 @click.group()
+@click.pass_context
+def vulnerabilities(_):
+    pass
+
+
+@vulnerabilities.command()
 @click.option('--vulnerability-ids')
 @click.option('--cve-ids')
 @click.option('--fix-ids')
@@ -29,8 +38,9 @@ import hodgepodge.types
 @click.option('--max-patch-publish-time')
 @click.option('--min-patch-due-date')
 @click.option('--max-patch-due-date')
+@click.option('--limit', type=int)
 @click.pass_context
-def vulnerabilities(
+def get_vulnerabilities(
         ctx: click.Context,
         vulnerability_ids: str,
         cve_ids: str,
@@ -55,39 +65,35 @@ def vulnerabilities(
         min_patch_publish_time: str,
         max_patch_publish_time: str,
         min_patch_due_date: str,
-        max_patch_due_date: str):
+        max_patch_due_date: str,
+        limit: int):
 
-    ctx.obj['kwargs'] = {
-        'vulnerability_ids': hodgepodge.click.str_to_list_of_int(vulnerability_ids),
-        'cve_ids': hodgepodge.click.str_to_list_of_str(cve_ids),
-        'fix_ids': hodgepodge.click.str_to_list_of_int(fix_ids),
-        'fix_names': hodgepodge.click.str_to_list_of_str(fix_names),
-        'fix_vendors': hodgepodge.click.str_to_list_of_str(fix_vendors),
-        'asset_ids': hodgepodge.click.str_to_list_of_int(asset_ids),
-        'asset_hostnames': hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        'asset_ip_addresses': hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        'asset_mac_addresses': hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
-        'asset_group_ids': hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        'asset_group_names': hodgepodge.click.str_to_list_of_str(asset_group_names),
-        'asset_tags': hodgepodge.click.str_to_list_of_str(asset_tags),
-        'min_vulnerability_risk_meter_score': min_vulnerability_risk_meter_score,
-        'max_vulnerability_risk_meter_score': max_vulnerability_risk_meter_score,
-        'min_vulnerability_first_seen_time': min_vulnerability_first_seen_time,
-        'max_vulnerability_first_seen_time': max_vulnerability_first_seen_time,
-        'min_vulnerability_last_seen_time': min_vulnerability_last_seen_time,
-        'max_vulnerability_last_seen_time': max_vulnerability_last_seen_time,
-        'min_cve_publish_time': min_cve_publish_time,
-        'max_cve_publish_time': max_cve_publish_time,
-        'min_patch_publish_time': min_patch_publish_time,
-        'max_patch_publish_time': max_patch_publish_time,
-        'min_patch_due_date': min_patch_due_date,
-        'max_patch_due_date': max_patch_due_date,
-    }
-
-
-@vulnerabilities.command()
-@click.option('--limit', type=int)
-@click.pass_context
-def get_vulnerabilities(ctx: click.Context, limit: int):
-    rows = ctx.obj['kenna_api'].iter_vulnerabilities(**ctx.obj['kwargs'], limit=limit)
-    hodgepodge.click.echo_as_jsonl(rows)
+    api = Kenna(**ctx.obj['kenna']['config'])
+    for row in api.get_vulnerabilities(
+        vulnerability_ids=hodgepodge.click.str_to_list_of_int(vulnerability_ids),
+        cve_ids=hodgepodge.click.str_to_list_of_str(cve_ids),
+        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
+        fix_names=hodgepodge.click.str_to_list_of_str(fix_names),
+        fix_vendors=hodgepodge.click.str_to_list_of_str(fix_vendors),
+        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
+        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
+        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
+        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
+        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
+        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
+        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
+        min_vulnerability_risk_meter_score=min_vulnerability_risk_meter_score,
+        max_vulnerability_risk_meter_score=max_vulnerability_risk_meter_score,
+        min_vulnerability_first_seen_time=hodgepodge.time.to_datetime(min_vulnerability_first_seen_time),
+        max_vulnerability_first_seen_time=hodgepodge.time.to_datetime(max_vulnerability_first_seen_time),
+        min_vulnerability_last_seen_time=hodgepodge.time.to_datetime(min_vulnerability_last_seen_time),
+        max_vulnerability_last_seen_time=hodgepodge.time.to_datetime(max_vulnerability_last_seen_time),
+        min_cve_publish_time=hodgepodge.time.to_datetime(min_cve_publish_time),
+        max_cve_publish_time=hodgepodge.time.to_datetime(max_cve_publish_time),
+        min_patch_publish_time=hodgepodge.time.to_datetime(min_patch_publish_time),
+        max_patch_publish_time=hodgepodge.time.to_datetime(max_patch_publish_time),
+        min_patch_due_date=hodgepodge.time.to_datetime(min_patch_due_date),
+        max_patch_due_date=hodgepodge.time.to_datetime(max_patch_due_date),
+        limit=limit,
+    ):
+        hodgepodge.click.echo_as_json(row)

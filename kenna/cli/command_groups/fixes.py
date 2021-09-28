@@ -1,10 +1,17 @@
-import click
+from kenna.api import Kenna
 
+import hodgepodge.time
 import hodgepodge.click
-import hodgepodge.types
+import click
 
 
 @click.group()
+@click.pass_context
+def fixes(_):
+    pass
+
+
+@fixes.command()
 @click.option('--fix-ids')
 @click.option('--fix-names')
 @click.option('--fix-vendors')
@@ -22,8 +29,9 @@ import hodgepodge.types
 @click.option('--max-fix-create-time')
 @click.option('--min-fix-last-update-time')
 @click.option('--max-fix-last-update-time')
+@click.option('--limit', type=int)
 @click.pass_context
-def fixes(
+def get_fixes(
         ctx: click.Context,
         fix_ids: str,
         fix_names: str,
@@ -39,30 +47,27 @@ def fixes(
         min_fix_create_time: str,
         max_fix_create_time: str,
         min_fix_last_update_time: str,
-        max_fix_last_update_time: str):
+        max_fix_last_update_time: str,
+        limit: int):
 
-    ctx.obj['kwargs'] = {
-        'fix_ids': hodgepodge.click.str_to_list_of_int(fix_ids),
-        'fix_names': hodgepodge.click.str_to_list_of_str(fix_names),
-        'fix_vendors': hodgepodge.click.str_to_list_of_str(fix_vendors),
-        'cve_ids': hodgepodge.click.str_to_list_of_str(cve_ids),
-        'asset_ids': hodgepodge.click.str_to_list_of_int(asset_ids),
-        'asset_hostnames': hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        'asset_ip_addresses': hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        'asset_mac_addresses': hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
-        'asset_group_ids': hodgepodge.click.str_to_list_of_str(asset_group_ids),
-        'asset_group_names': hodgepodge.click.str_to_list_of_str(asset_group_names),
-        'asset_tags': hodgepodge.click.str_to_list_of_str(asset_tags),
-        'min_fix_create_time': min_fix_create_time,
-        'max_fix_create_time': max_fix_create_time,
-        'min_fix_last_update_time': min_fix_last_update_time,
-        'max_fix_last_update_time': max_fix_last_update_time,
-    }
+    api = Kenna(**ctx.obj['kenna']['config'])
+    for row in api.iter_fixes(
+        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
+        fix_names=hodgepodge.click.str_to_list_of_str(fix_names),
+        fix_vendors=hodgepodge.click.str_to_list_of_str(fix_vendors),
+        cve_ids=hodgepodge.click.str_to_list_of_str(cve_ids),
+        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
+        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
+        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
+        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
+        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
+        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
+        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
+        min_fix_create_time=hodgepodge.time.to_datetime(min_fix_create_time),
+        max_fix_create_time=hodgepodge.time.to_datetime(max_fix_create_time),
+        min_fix_last_update_time=hodgepodge.time.to_datetime(min_fix_last_update_time),
+        max_fix_last_update_time=hodgepodge.time.to_datetime(max_fix_last_update_time),
+        limit=limit,
+    ):
+        hodgepodge.click.echo_as_json(row)
 
-
-@fixes.command()
-@click.option('--limit', type=int)
-@click.pass_context
-def get_fixes(ctx: click.Context, limit: int):
-    rows = ctx.obj['kenna_api'].iter_fixes(**ctx.obj['kwargs'], limit=limit)
-    hodgepodge.click.echo_as_jsonl(rows)

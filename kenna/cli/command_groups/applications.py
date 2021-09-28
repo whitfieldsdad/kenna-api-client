@@ -2,9 +2,16 @@ import click
 
 import hodgepodge.click
 import hodgepodge.types
+from kenna.api import Kenna
 
 
 @click.group()
+@click.pass_context
+def applications(_):
+    pass
+
+
+@applications.command()
 @click.option('--application-ids')
 @click.option('--application-names')
 @click.option('--application-owners')
@@ -16,8 +23,9 @@ import hodgepodge.types
 @click.option('--max-asset-count', type=int)
 @click.option('--min-vulnerability-count', type=int)
 @click.option('--max-vulnerability-count', type=int)
+@click.option('--limit', type=int)
 @click.pass_context
-def applications(
+def get_applications(
         ctx: click.Context,
         application_ids: str,
         application_names: str,
@@ -29,26 +37,22 @@ def applications(
         min_asset_count: int,
         max_asset_count: int,
         min_vulnerability_count: int,
-        max_vulnerability_count: int):
+        max_vulnerability_count: int,
+        limit: int):
 
-    ctx.obj['kwargs'] = {
-        'application_ids': hodgepodge.click.str_to_list_of_int(application_ids),
-        'application_names': hodgepodge.click.str_to_list_of_str(application_names),
-        'application_owners': hodgepodge.click.str_to_list_of_str(application_owners),
-        'application_teams': hodgepodge.click.str_to_list_of_str(application_teams),
-        'application_business_units': hodgepodge.click.str_to_list_of_str(application_business_units),
-        'min_application_risk_meter_score': min_application_risk_meter_score,
-        'max_application_risk_meter_score': max_application_risk_meter_score,
-        'min_asset_count': min_asset_count,
-        'max_asset_count': max_asset_count,
-        'min_vulnerability_count': min_vulnerability_count,
-        'max_vulnerability_count': max_vulnerability_count,
-    }
-
-
-@applications.command()
-@click.option('--limit', type=int)
-@click.pass_context
-def get_applications(ctx: click.Context, limit: int):
-    rows = ctx.obj['kenna_api'].iter_applications(**ctx.obj['kwargs'], limit=limit)
-    hodgepodge.click.echo_as_jsonl(rows)
+    api = Kenna(**ctx.obj['kenna']['config'])
+    for row in api.iter_applications(
+        application_ids=hodgepodge.click.str_to_list_of_int(application_ids),
+        application_names=hodgepodge.click.str_to_list_of_str(application_names),
+        application_owners=hodgepodge.click.str_to_list_of_str(application_owners),
+        application_teams=hodgepodge.click.str_to_list_of_str(application_teams),
+        application_business_units=hodgepodge.click.str_to_list_of_str(application_business_units),
+        min_application_risk_meter_score=min_application_risk_meter_score,
+        max_application_risk_meter_score=max_application_risk_meter_score,
+        min_asset_count=min_asset_count,
+        max_asset_count=max_asset_count,
+        min_vulnerability_count=min_vulnerability_count,
+        max_vulnerability_count=max_vulnerability_count,
+        limit=limit,
+    ):
+        hodgepodge.click.echo_as_json(row)

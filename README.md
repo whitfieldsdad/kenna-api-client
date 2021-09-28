@@ -1,12 +1,18 @@
 # Kenna
 
-> An API client for Kenna Security
-
 ![Kenna](https://raw.githubusercontent.com/whitfieldsdad/images/main/kenna-hero.png)
+
+`kenna` is an [API](https://apidocs.kennasecurity.com/reference) client for [Kenna Security](https://www.kennasecurity.com/) that allows you to work with applications, assets, connectors, dashboard groups, users, roles, vulnerabilities, and fixes.
+
+## FAQ
+
+### What's included?
+
+- A robust command-line interface that allows you to explore the raw data provided by Kenna Security's REST API
 
 ## Installation
 
-To install using `pip`:
+To install `kenna` using `pip`:
 
 ```shell
 $ pip install kenna
@@ -30,7 +36,7 @@ $ python3 setup.py install
 
 ## Required environment variables
 
-- `$KENNA_API_KEY`: your API key for accessing Kenna.
+- `$KENNA_API_KEY`: your API key for accessing Kenna
 
 ## Tutorials
 
@@ -44,7 +50,7 @@ After installing `kenna` you can access the command-line interface as follows:
 $ poetry run kenna
 ```
 
-If you're not using `poetry`, you can access the command line as follows:
+If you're not using `poetry` (you should use it), you can access the command line as follows:
 
 ```shell
 $ python3 -m kenna.cli
@@ -74,7 +80,7 @@ Commands:
   roles
   users
   vulnerabilities
-```
+````
 
 #### Applications
 
@@ -83,6 +89,21 @@ The following options are available when working with applications:
 ```shell
 $ poetry run kenna applications --help
 Usage: kenna applications [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-applications
+```
+
+##### List applications
+
+The following options are available when listing applications:
+
+```shell
+$ poetry run kenna applications get-applications --help
+Usage: kenna applications get-applications [OPTIONS]
 
 Options:
   --application-ids TEXT
@@ -96,10 +117,8 @@ Options:
   --max-asset-count INTEGER
   --min-vulnerability-count INTEGER
   --max-vulnerability-count INTEGER
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-applications
 ```
 
 #### Assets
@@ -109,6 +128,21 @@ The following options are available when working with assets:
 ```shell
 $ poetry run kenna assets --help
 Usage: kenna assets [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-assets
+```
+
+##### List assets
+
+The following options are available when listing assets:
+
+```shell
+$ poetry run kenna assets get-assets --help
+Usage: kenna assets get-assets [OPTIONS]
 
 Options:
   --asset-ids TEXT
@@ -126,10 +160,8 @@ Options:
   --max-asset-last-seen-time TEXT
   --min-asset-last-boot-time TEXT
   --max-asset-last-boot-time TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-assets
 ```
 
 #### Asset groups
@@ -139,6 +171,21 @@ The following options are available when working with asset groups:
 ```shell
 $ poetry run kenna asset-groups --help
 Usage: kenna asset-groups [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-asset-groups
+```
+
+##### List asset groups
+
+The following options are available when listing asset groups:
+
+```shell
+$ poetry run kenna asset-groups get-asset-groups --help
+Usage: kenna asset-groups get-asset-groups [OPTIONS]
 
 Options:
   --asset-group-ids TEXT
@@ -152,10 +199,23 @@ Options:
   --max-asset-group-create-time TEXT
   --min-asset-group-last-update-time TEXT
   --max-asset-group-last-update-time TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
+```
 
-Commands:
-  get-asset-groups
+For example, let's list the ID, name, asset count, vulnerability count, and fix count associated with each asset group that has a name containing the string "Europe":
+
+```shell
+$ poetry run kenna asset-groups get-asset-groups --asset-group-names "*Europe*" | jq '{"id": .id, "name": .name, "asset_count": .asset_count, "vulnerability_count": .vulnerability_count, "fix_count": .fix_count}' | jq --slurp
+[
+  {
+    "id": 123456,
+    "name": "All European assets",
+    "asset_count": 12345,
+    "vulnerability_count": 1234567,
+    "fix_count": 12345
+  }
+]
 ```
 
 #### Connectors
@@ -167,16 +227,29 @@ $ poetry run kenna connectors --help
 Usage: kenna connectors [OPTIONS] COMMAND [ARGS]...
 
 Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-connectors
+```
+
+##### List connectors
+
+The following options are available when listing connectors:
+
+```shell
+$ poetry run kenna connectors get-connectors --help
+Usage: kenna connectors get-connectors [OPTIONS]
+
+Options:
   --connector-ids TEXT
   --connector-names TEXT
   --min-connector-run-start-time TEXT
   --max-connector-run-start-time TEXT
   --min-connector-run-end-time TEXT
   --max-connector-run-end-time TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-connectors
 ```
 
 #### Connector runs
@@ -202,6 +275,26 @@ Commands:
   get-connector-runs
 ```
 
+##### List connector runs
+
+The following options are available when listing connector runs:
+
+```shell
+$ poetry run kenna connector-runs get-connector-runs --help
+Usage: kenna connector-runs get-connector-runs [OPTIONS]
+
+Options:
+  --connector-ids TEXT
+  --connector-names TEXT
+  --connector-run-ids TEXT
+  --min-connector-run-start-time TEXT
+  --max-connector-run-start-time TEXT
+  --min-connector-run-end-time TEXT
+  --max-connector-run-end-time TEXT
+  --limit INTEGER
+  --help                          Show this message and exit.
+```
+
 #### Dashboard groups
 
 The following options are available when working with dashboard groups:
@@ -209,6 +302,21 @@ The following options are available when working with dashboard groups:
 ```shell
 $ poetry run kenna dashboard-groups --help
 Usage: kenna dashboard-groups [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-dashboard-groups
+```
+
+##### List dashboard groups
+
+The following options are available when listing dashboard groups:
+
+```shell
+$ poetry run kenna dashboard-groups get-dashboard-groups --help
+Usage: kenna dashboard-groups get-dashboard-groups [OPTIONS]
 
 Options:
   --dashboard-group-ids TEXT
@@ -219,10 +327,8 @@ Options:
   --max-dashboard-group-create-time TEXT
   --min-dashboard-group-last-update-time TEXT
   --max-dashboard-group-last-update-time TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-dashboard-groups
 ```
 
 #### Users
@@ -234,6 +340,22 @@ $ poetry run kenna users --help
 Usage: kenna users [OPTIONS] COMMAND [ARGS]...
 
 Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-users
+```
+
+##### List users
+
+The following options are available when listing users:
+
+```shell
+$ poetry run kenna users get-users --help
+poetry run kenna users get-users --help
+Usage: kenna users get-users [OPTIONS]
+
+Options:
   --user-ids TEXT
   --user-names TEXT
   --user-email-addresses TEXT
@@ -243,10 +365,8 @@ Options:
   --max-user-last-sign-in-time TEXT
   --min-user-last-update-time TEXT
   --max-user-last-update-time TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-users
 ```
 
 #### Roles
@@ -256,6 +376,21 @@ The following options are available when working with roles:
 ```shell
 $ poetry run kenna roles --help
 Usage: kenna roles [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-roles
+```
+
+##### List roles
+
+The following options are available when listing roles:
+
+```shell
+$ poetry run kenna roles get-roles --help
+Usage: kenna roles get-roles [OPTIONS]
 
 Options:
   --role-ids TEXT
@@ -270,10 +405,8 @@ Options:
   --max-role-create-time TEXT
   --min-role-last-update-time TEXT
   --max-role-last-update-time TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-roles
 ```
 
 #### Vulnerabilities
@@ -283,6 +416,21 @@ The following options are available when working with vulnerabilities:
 ```shell
 $ poetry run kenna vulnerabilities --help
 Usage: kenna vulnerabilities [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-vulnerabilities
+```
+
+##### List vulnerabilities
+
+The following options are available when listing vulnerabilities:
+
+```shell
+$ poetry run kenna vulnerabilities get-vulnerabilities --help
+Usage: kenna vulnerabilities get-vulnerabilities [OPTIONS]
 
 Options:
   --vulnerability-ids TEXT
@@ -309,10 +457,8 @@ Options:
   --max-patch-publish-time TEXT
   --min-patch-due-date TEXT
   --max-patch-due-date TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-vulnerabilities
 ```
 
 #### Fixes
@@ -322,6 +468,21 @@ The following options are available when working with fixes:
 ```shell
 $ poetry run kenna fixes --help
 Usage: kenna fixes [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-fixes
+```
+
+##### List fixes
+
+The following options are available when listing fixes:
+
+```shell
+$ poetry run kenna fixes get-fixes --help
+Usage: kenna fixes get-fixes [OPTIONS]
 
 Options:
   --fix-ids TEXT
@@ -341,8 +502,6 @@ Options:
   --max-fix-create-time TEXT
   --min-fix-last-update-time TEXT
   --max-fix-last-update-time TEXT
+  --limit INTEGER
   --help                          Show this message and exit.
-
-Commands:
-  get-fixes
 ```

@@ -21,7 +21,12 @@ from kenna.region import DEFAULT_REGION
 @click.pass_context
 def cli(ctx, api_key, region):
     ctx.ensure_object(dict)
-    ctx.obj['kenna_api'] = Kenna(api_key=api_key, region=region)
+    ctx.obj['kenna'] = {
+        'config': {
+            'api_key': api_key,
+            'region': region,
+        }
+    }
 
 
 COMMAND_GROUPS = [
