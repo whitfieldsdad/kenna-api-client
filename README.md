@@ -1,4 +1,4 @@
-# Kenna
+# kenna
 
 ![Kenna](https://raw.githubusercontent.com/whitfieldsdad/images/main/kenna-hero.png)
 
@@ -8,7 +8,8 @@
 
 ### What's included?
 
-- A robust command-line interface that allows you to explore the raw data provided by Kenna Security's REST API
+- An API client that allows you to lookup applications, assets, asset groups, connectors, connector runs, dashboard groups, users, roles, fixes, and vulnerabilities;
+- A robust command-line interface to go along with it
 
 ## Installation
 
@@ -33,10 +34,35 @@ $ git clone git@github.com:whitfieldsdad/python-kenna.git
 $ cd python-kenna
 $ python3 setup.py install
 ```
+ 
+Finally, export an environment variable named `KENNA_API_KEY` to your shell (i.e. add it to your `~/.bashrc` or user profile).
 
-## Required environment variables
+## Important environment variables
 
-- `$KENNA_API_KEY`: your API key for accessing Kenna
+- `KENNA_API_KEY`: your API key for accessing Kenna (required)
+- `ENABLE_INTEGRATION_TESTS`: `true` or `false` (optional)
+
+## Testing
+
+You can run the unit tests and integration tests for this package as follows:
+
+```shell
+$ make test
+```
+
+If the value of the `$ENABLE_INTEGRATION_TESTS` environment variable is set to `true`, both the unit tests and integration tests will be executed:
+
+```shell
+$ ENABLE_INTEGRATION_TESTS=true make test
+```
+
+If you have separate tenants for development and production, you can select which tenant you'd like to work with as follows:
+
+```shell
+$ ENABLE_INTEGRATION_TESTS=true
+$ KENNA_API_KEY=${KENNA_DEVELOPMENT_API_KEY} make test
+$ KENNA_API_KEY=${KENNA_PRODUCTION_API_KEY} make test
+```
 
 ## Tutorials
 
