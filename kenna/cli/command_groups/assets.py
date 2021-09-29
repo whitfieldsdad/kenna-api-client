@@ -14,6 +14,17 @@ def assets(_):
 
 
 @assets.command()
+@click.option('--asset-id', type=int, required=True)
+@click.pass_context
+def get_asset(ctx: click.Context, asset_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_asset(asset_id=asset_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+
+@assets.command()
 @click.option('--asset-ids')
 @click.option('--asset-group-ids')
 @click.option('--asset-group-names')
@@ -21,6 +32,7 @@ def assets(_):
 @click.option('--asset-hostnames')
 @click.option('--asset-ip-addresses')
 @click.option('--asset-mac-addresses')
+@click.option('--vulnerability-ids')
 @click.option('--min-asset-risk-meter-score', type=int)
 @click.option('--max-asset-risk-meter-score', type=int)
 @click.option('--min-asset-first-seen-time')
@@ -40,6 +52,7 @@ def get_assets(
         asset_hostnames: str,
         asset_ip_addresses: str,
         asset_mac_addresses: str,
+        vulnerability_ids: str,
         min_asset_risk_meter_score: int,
         max_asset_risk_meter_score: int,
         min_asset_first_seen_time: str,
@@ -59,6 +72,7 @@ def get_assets(
         asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
         asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
         asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
+        vulnerability_ids=hodgepodge.click.str_to_list_of_int(vulnerability_ids),
         min_asset_risk_meter_score=min_asset_risk_meter_score,
         max_asset_risk_meter_score=max_asset_risk_meter_score,
         min_asset_first_seen_time=hodgepodge.time.to_datetime(min_asset_first_seen_time),

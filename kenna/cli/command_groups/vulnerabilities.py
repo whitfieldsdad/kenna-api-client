@@ -14,6 +14,16 @@ def vulnerabilities(_):
 
 
 @vulnerabilities.command()
+@click.option('--vulnerability-id', type=int, required=True)
+@click.pass_context
+def get_vulnerability(ctx: click.Context, vulnerability_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_vulnerability(vulnerability_id=vulnerability_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+@vulnerabilities.command()
 @click.option('--vulnerability-ids')
 @click.option('--cve-ids')
 @click.option('--fix-ids')

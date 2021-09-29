@@ -14,6 +14,16 @@ def asset_groups(_):
 
 
 @asset_groups.command()
+@click.option('--asset-group-id', type=int, required=True)
+@click.pass_context
+def get_asset_group(ctx: click.Context, asset_group_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_asset_group(asset_group_id=asset_group_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+@asset_groups.command()
 @click.option('--asset-group-ids')
 @click.option('--asset-group-names')
 @click.option('--asset-ids')

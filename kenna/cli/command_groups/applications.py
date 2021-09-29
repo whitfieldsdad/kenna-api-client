@@ -12,6 +12,16 @@ def applications(_):
 
 
 @applications.command()
+@click.option('--application-id', type=int, required=True)
+@click.pass_context
+def get_application(ctx: click.Context, application_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_application(application_id=application_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+@applications.command()
 @click.option('--application-ids')
 @click.option('--application-names')
 @click.option('--application-owners')

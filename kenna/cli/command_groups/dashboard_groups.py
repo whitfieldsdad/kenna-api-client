@@ -14,6 +14,16 @@ def dashboard_groups(_):
 
 
 @dashboard_groups.command()
+@click.option('--dashboard-group-id', type=int, required=True)
+@click.pass_context
+def get_dashboard_groups(ctx: click.Context, dashboard_group_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_dashboard_group(dashboard_group_id=dashboard_group_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+@dashboard_groups.command()
 @click.option('--dashboard-group-ids')
 @click.option('--dashboard-group-names')
 @click.option('--role-ids')

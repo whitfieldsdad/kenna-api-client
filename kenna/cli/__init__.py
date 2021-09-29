@@ -1,12 +1,10 @@
 import click
 
 from kenna import DEFAULT_API_KEY
-from kenna.api import Kenna
 from kenna.cli.command_groups.applications import applications
 from kenna.cli.command_groups.assets import assets
 from kenna.cli.command_groups.asset_groups import asset_groups
 from kenna.cli.command_groups.connectors import connectors
-from kenna.cli.command_groups.connector_runs import connector_runs
 from kenna.cli.command_groups.dashboard_groups import dashboard_groups
 from kenna.cli.command_groups.fixes import fixes
 from kenna.cli.command_groups.users import users
@@ -34,7 +32,6 @@ COMMAND_GROUPS = [
     assets,
     asset_groups,
     connectors,
-    connector_runs,
     dashboard_groups,
     fixes,
     users,

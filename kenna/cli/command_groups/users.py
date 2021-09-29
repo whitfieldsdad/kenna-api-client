@@ -14,6 +14,16 @@ def users(_):
 
 
 @users.command()
+@click.option('--user-id', type=int, required=True)
+@click.pass_context
+def get_user(ctx: click.Context, user_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_user(user_id=user_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+@users.command()
 @click.option('--user-ids')
 @click.option('--user-names')
 @click.option('--user-email-addresses')

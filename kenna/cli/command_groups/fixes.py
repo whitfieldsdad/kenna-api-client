@@ -12,6 +12,16 @@ def fixes(_):
 
 
 @fixes.command()
+@click.option('--fix-id', type=int, required=True)
+@click.pass_context
+def get_fix(ctx: click.Context, fix_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_fix(fix_id=fix_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+@fixes.command()
 @click.option('--fix-ids')
 @click.option('--fix-names')
 @click.option('--fix-vendors')

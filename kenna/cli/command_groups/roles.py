@@ -14,6 +14,16 @@ def roles(_):
 
 
 @roles.command()
+@click.option('--role-id', type=int, required=True)
+@click.pass_context
+def get_role(ctx: click.Context, role_id: int):
+    api = Kenna(**ctx.obj['kenna']['config'])
+    row = api.get_role(role_id=role_id)
+    if row:
+        hodgepodge.click.echo_as_json(row)
+
+
+@roles.command()
 @click.option('--role-ids')
 @click.option('--role-names')
 @click.option('--role-types')
