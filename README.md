@@ -1,4 +1,4 @@
-# kenna
+# kenna  ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/kenna) ![PyPI - Wheel](https://img.shields.io/pypi/wheel/kenna) ![PyPI - Downloads](https://img.shields.io/pypi/dm/kenna)
 
 ![Kenna](https://raw.githubusercontent.com/whitfieldsdad/images/main/kenna-hero.png)
 
