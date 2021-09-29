@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='kenna',
-    version='0.2.1',
+    version='0.2.2',
     author='Tyler Fisher',
     author_email='tylerfisher@tylerfisher.ca',
     description="An API client for Kenna Security",
