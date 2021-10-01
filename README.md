@@ -121,6 +121,7 @@ Options:
 
 Commands:
   get-applications
+  count-applications
 ```
 
 ##### List applications
@@ -160,6 +161,7 @@ Options:
 
 Commands:
   get-assets
+  count-assets
 ```
 
 ##### List assets
@@ -203,6 +205,7 @@ Options:
 
 Commands:
   get-asset-groups
+  count-asset-groups
 ```
 
 ##### List asset groups
@@ -257,6 +260,7 @@ Options:
 
 Commands:
   get-connectors
+  count-connectors
 ```
 
 ##### List connectors
@@ -299,6 +303,7 @@ Options:
 
 Commands:
   get-connector-runs
+  count-connector-runs
 ```
 
 ##### List connector runs
@@ -334,6 +339,7 @@ Options:
 
 Commands:
   get-dashboard-groups
+  count-dashboard-groups
 ```
 
 ##### List dashboard groups
@@ -370,6 +376,7 @@ Options:
 
 Commands:
   get-users
+  count-users
 ```
 
 ##### List users
@@ -408,6 +415,7 @@ Options:
 
 Commands:
   get-roles
+  count-roles
 ```
 
 ##### List roles
@@ -448,6 +456,7 @@ Options:
 
 Commands:
   get-vulnerabilities
+  count-vulnerabilities
 ```
 
 ##### List vulnerabilities
@@ -500,6 +509,7 @@ Options:
 
 Commands:
   get-fixes
+  count-fixes
 ```
 
 ##### List fixes
