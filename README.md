@@ -8,7 +8,7 @@
 
 ### What's included?
 
-- An API client that allows you to lookup applications, assets, asset groups, connectors, connector runs, dashboard groups, users, roles, fixes, and vulnerabilities;
+- An API client that allows you to lookup and count applications, assets, asset groups, connectors, connector runs, dashboard groups, users, roles, fixes, and vulnerabilities;
 - A robust command-line interface to go along with it
 
 ## Installation
