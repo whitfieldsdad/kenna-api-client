@@ -1,10 +1,13 @@
 from kenna.api import Kenna
 
-import click
-
-import hodgepodge.click
+import kenna.cli.click as click
+import hodgepodge.pattern_matching
+import hodgepodge.files
 import hodgepodge.types
 import hodgepodge.time
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @click.group()
@@ -14,13 +17,17 @@ def users(_):
 
 
 @users.command()
-@click.option('--user-id', type=int, required=True)
+@click.option('--user-id', type=int)
+@click.option('--user-email-address')
 @click.pass_context
-def get_user(ctx: click.Context, user_id: int):
-    api = Kenna(**ctx.obj['kenna']['config'])
-    row = api.get_user(user_id=user_id)
+def get_user(ctx: click.Context, user_id: int, user_email_address: str):
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    row = api.get_user(
+        user_id=user_id,
+        user_email_address=user_email_address,
+    )
     if row:
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @users.command()
@@ -33,6 +40,8 @@ def get_user(ctx: click.Context, user_id: int):
 @click.option('--max-user-last-sign-in-time')
 @click.option('--min-user-last-update-time')
 @click.option('--max-user-last-update-time')
+@click.option('--hide-active-users/--show-active-users', default=False)
+@click.option('--hide-inactive-users/--show-inactive-users', default=False)
 @click.option('--limit', type=int)
 @click.pass_context
 def get_users(
@@ -46,22 +55,26 @@ def get_users(
         max_user_last_update_time: str,
         min_user_last_sign_in_time: str,
         max_user_last_sign_in_time: str,
+        hide_active_users: bool,
+        hide_inactive_users: bool,
         limit: int):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     for row in api.iter_users(
-        user_ids=hodgepodge.click.str_to_list_of_int(user_ids),
-        user_names=hodgepodge.click.str_to_list_of_str(user_names),
-        user_email_addresses=hodgepodge.click.str_to_list_of_str(user_email_addresses),
+        user_ids=click.str_to_ints(user_ids),
+        user_names=click.str_to_strs(user_names),
+        user_email_addresses=click.str_to_strs(user_email_addresses),
         min_user_create_time=hodgepodge.time.to_datetime(min_user_create_time),
         max_user_create_time=hodgepodge.time.to_datetime(max_user_create_time),
         min_user_last_update_time=hodgepodge.time.to_datetime(min_user_last_update_time),
         max_user_last_update_time=hodgepodge.time.to_datetime(max_user_last_update_time),
         min_user_last_sign_in_time=hodgepodge.time.to_datetime(min_user_last_sign_in_time),
         max_user_last_sign_in_time=hodgepodge.time.to_datetime(max_user_last_sign_in_time),
+        hide_active_users=hide_active_users,
+        hide_inactive_users=hide_inactive_users,
         limit=limit,
     ):
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @users.command()
@@ -74,7 +87,8 @@ def get_users(
 @click.option('--max-user-last-sign-in-time')
 @click.option('--min-user-last-update-time')
 @click.option('--max-user-last-update-time')
-@click.option('--limit', type=int)
+@click.option('--hide-active-users/--show-active-users', default=False)
+@click.option('--hide-inactive-users/--show-inactive-users', default=False)
 @click.pass_context
 def count_users(
         ctx: click.Context,
@@ -87,20 +101,21 @@ def count_users(
         max_user_last_update_time: str,
         min_user_last_sign_in_time: str,
         max_user_last_sign_in_time: str,
-        limit: int):
+        hide_active_users: bool,
+        hide_inactive_users: bool):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    rows = api.iter_users(
-        user_ids=hodgepodge.click.str_to_list_of_int(user_ids),
-        user_names=hodgepodge.click.str_to_list_of_str(user_names),
-        user_email_addresses=hodgepodge.click.str_to_list_of_str(user_email_addresses),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    n = api.count_users(
+        user_ids=click.str_to_ints(user_ids),
+        user_names=click.str_to_strs(user_names),
+        user_email_addresses=click.str_to_strs(user_email_addresses),
         min_user_create_time=hodgepodge.time.to_datetime(min_user_create_time),
         max_user_create_time=hodgepodge.time.to_datetime(max_user_create_time),
         min_user_last_update_time=hodgepodge.time.to_datetime(min_user_last_update_time),
         max_user_last_update_time=hodgepodge.time.to_datetime(max_user_last_update_time),
         min_user_last_sign_in_time=hodgepodge.time.to_datetime(min_user_last_sign_in_time),
         max_user_last_sign_in_time=hodgepodge.time.to_datetime(max_user_last_sign_in_time),
-        limit=limit,
+        hide_active_users=hide_active_users,
+        hide_inactive_users=hide_inactive_users,
     )
-    count = sum(1 for _ in rows)
-    click.echo(count)
+    click.echo(n)

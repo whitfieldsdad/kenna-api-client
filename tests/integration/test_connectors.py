@@ -14,13 +14,21 @@ class ConnectorIntegrationTestCases(TestCase):
             raise unittest.SkipTest("Integration tests are disabled - set ENABLE_INTEGRATION_TESTS=1 to enable them")
 
         cls.kenna_api = Kenna()
+
+        #: At least one connector is required.
         try:
-            next(cls.kenna_api.iter_connectors())
+            next(cls.kenna_api.iter_connectors(limit=1))
         except StopIteration:
             raise unittest.SkipTest("No connectors found")
 
+        #: At least one connector run is required.
+        try:
+            next(cls.kenna_api.iter_connector_runs())
+        except StopIteration:
+            raise unittest.SkipTest("No connector runs found")
+
     def test_get_connectors(self):
-        connectors = self.kenna_api.get_connectors()
+        connectors = list(self.kenna_api.iter_connectors())
         self.assertGreater(len(connectors), 0)
         self.assertTrue(all(isinstance(connector, dict) for connector in connectors))
 
@@ -50,3 +58,9 @@ class ConnectorIntegrationTestCases(TestCase):
 
         connector_run = self.kenna_api.get_connector_run(connector_id=connector_id, connector_run_id=connector_run_id)
         self.assertEqual(connector_run_id, connector_run['id'])
+
+    def test_count_connectors(self):
+        _ = self.kenna_api.count_connectors()
+
+    def test_count_connector_runs(self):
+        _ = self.kenna_api.count_connector_runs()

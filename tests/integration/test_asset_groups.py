@@ -15,12 +15,12 @@ class AssetGroupIntegrationTestCases(TestCase):
 
         cls.kenna_api = Kenna()
         try:
-            next(cls.kenna_api.iter_asset_groups())
+            next(cls.kenna_api.iter_asset_groups(limit=1))
         except StopIteration:
             raise unittest.SkipTest("No asset groups found")
 
     def test_get_asset_groups(self):
-        asset_groups = self.kenna_api.get_asset_groups(limit=1)
+        asset_groups = list(self.kenna_api.iter_asset_groups(limit=1))
         self.assertGreater(len(asset_groups), 0)
         self.assertTrue(all(isinstance(asset_group, dict) for asset_group in asset_groups))
 
@@ -31,3 +31,6 @@ class AssetGroupIntegrationTestCases(TestCase):
         b = self.kenna_api.get_asset_group(asset_group_id=a['id'])
         self.assertIsNotNone(b)
         self.assertEqual(a['id'], b['id'])
+
+    def test_count_asset_groups(self):
+        _ = self.kenna_api.count_asset_groups()

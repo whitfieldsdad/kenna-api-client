@@ -15,18 +15,17 @@ class RoleIntegrationTestCases(TestCase):
 
         cls.kenna_api = Kenna()
         try:
-            next(cls.kenna_api.iter_roles())
+            next(cls.kenna_api.iter_roles(limit=1))
         except StopIteration:
             raise unittest.SkipTest("No roles found")
 
     def test_get_roles(self):
-        roles = self.kenna_api.get_roles(limit=1)
+        roles = list(self.kenna_api.iter_roles(limit=1))
         self.assertGreater(len(roles), 0)
         self.assertTrue(all(isinstance(role, dict) for role in roles))
 
     def test_get_role(self):
-        roles = self.kenna_api.get_roles()
-        self.assertIsInstance(roles, list)
+        roles = list(self.kenna_api.iter_roles())
         self.assertGreater(len(roles), 0)
 
         for a in roles:
@@ -35,3 +34,6 @@ class RoleIntegrationTestCases(TestCase):
                 if b:
                     self.assertEqual(a['id'], b['id'])
                     break
+
+    def test_count_roles(self):
+        _ = self.kenna_api.count_roles()

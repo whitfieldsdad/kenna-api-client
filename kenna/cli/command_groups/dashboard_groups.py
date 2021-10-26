@@ -1,8 +1,6 @@
 from kenna.api import Kenna
 
-import click
-
-import hodgepodge.click
+import kenna.cli.click as click
 import hodgepodge.types
 import hodgepodge.time
 
@@ -17,10 +15,10 @@ def dashboard_groups(_):
 @click.option('--dashboard-group-id', type=int, required=True)
 @click.pass_context
 def get_dashboard_groups(ctx: click.Context, dashboard_group_id: int):
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     row = api.get_dashboard_group(dashboard_group_id=dashboard_group_id)
     if row:
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @dashboard_groups.command()
@@ -46,7 +44,7 @@ def get_dashboard_groups(
         max_dashboard_group_last_update_time: str,
         limit: int):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     for row in api.iter_dashboard_groups(
         dashboard_group_ids=dashboard_group_ids,
         dashboard_group_names=dashboard_group_names,
@@ -58,7 +56,7 @@ def get_dashboard_groups(
         max_dashboard_group_last_update_time=hodgepodge.time.to_datetime(max_dashboard_group_last_update_time),
         limit=limit,
     ):
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @dashboard_groups.command()
@@ -70,7 +68,6 @@ def get_dashboard_groups(
 @click.option('--max-dashboard-group-create-time')
 @click.option('--min-dashboard-group-last-update-time')
 @click.option('--max-dashboard-group-last-update-time')
-@click.option('--limit', type=int)
 @click.pass_context
 def count_dashboard_groups(
         ctx: click.Context,
@@ -81,11 +78,10 @@ def count_dashboard_groups(
         min_dashboard_group_create_time: str,
         max_dashboard_group_create_time: str,
         min_dashboard_group_last_update_time: str,
-        max_dashboard_group_last_update_time: str,
-        limit: int):
+        max_dashboard_group_last_update_time: str):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    groups = api.iter_dashboard_groups(
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    n = api.count_dashboard_groups(
         dashboard_group_ids=dashboard_group_ids,
         dashboard_group_names=dashboard_group_names,
         role_ids=role_ids,
@@ -94,7 +90,5 @@ def count_dashboard_groups(
         max_dashboard_group_create_time=hodgepodge.time.to_datetime(max_dashboard_group_create_time),
         min_dashboard_group_last_update_time=hodgepodge.time.to_datetime(min_dashboard_group_last_update_time),
         max_dashboard_group_last_update_time=hodgepodge.time.to_datetime(max_dashboard_group_last_update_time),
-        limit=limit,
     )
-    count = sum(1 for _ in groups)
-    click.echo(count)
+    click.echo(n)

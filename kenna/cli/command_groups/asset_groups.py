@@ -1,8 +1,6 @@
 from kenna.api import Kenna
 
-import click
-
-import hodgepodge.click
+import kenna.cli.click as click
 import hodgepodge.types
 import hodgepodge.time
 
@@ -17,10 +15,10 @@ def asset_groups(_):
 @click.option('--asset-group-id', type=int, required=True)
 @click.pass_context
 def get_asset_group(ctx: click.Context, asset_group_id: int):
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     row = api.get_asset_group(asset_group_id=asset_group_id)
     if row:
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @asset_groups.command()
@@ -52,22 +50,22 @@ def get_asset_groups(
         max_asset_group_last_update_time: str,
         limit: int):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    for row in api.get_asset_groups(
-        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
-        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
-        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
-        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    for row in api.iter_asset_groups(
+        asset_group_ids=click.str_to_ints(asset_group_ids),
+        asset_group_names=click.str_to_strs(asset_group_names),
+        asset_ids=click.str_to_ints(asset_ids),
+        asset_tags=click.str_to_strs(asset_tags),
+        asset_hostnames=click.str_to_strs(asset_hostnames),
+        asset_ip_addresses=click.str_to_strs(asset_ip_addresses),
+        asset_mac_addresses=click.str_to_strs(asset_mac_addresses),
         min_asset_group_create_time=hodgepodge.time.to_datetime(min_asset_group_create_time),
         max_asset_group_create_time=hodgepodge.time.to_datetime(max_asset_group_create_time),
         min_asset_group_last_update_time=hodgepodge.time.to_datetime(min_asset_group_last_update_time),
         max_asset_group_last_update_time=hodgepodge.time.to_datetime(max_asset_group_last_update_time),
         limit=limit,
     ):
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @asset_groups.command()
@@ -82,7 +80,6 @@ def get_asset_groups(
 @click.option('--max-asset-group-create-time')
 @click.option('--min-asset-group-last-update-time')
 @click.option('--max-asset-group-last-update-time')
-@click.option('--limit', type=int)
 @click.pass_context
 def count_asset_groups(
         ctx: click.Context,
@@ -96,23 +93,30 @@ def count_asset_groups(
         min_asset_group_create_time: str,
         max_asset_group_create_time: str,
         min_asset_group_last_update_time: str,
-        max_asset_group_last_update_time: str,
-        limit: int):
+        max_asset_group_last_update_time: str):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    rows = api.get_asset_groups(
-        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
-        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
-        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
-        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    n = api.count_asset_groups(
+        asset_group_ids=click.str_to_ints(asset_group_ids),
+        asset_group_names=click.str_to_strs(asset_group_names),
+        asset_ids=click.str_to_ints(asset_ids),
+        asset_tags=click.str_to_strs(asset_tags),
+        asset_hostnames=click.str_to_strs(asset_hostnames),
+        asset_ip_addresses=click.str_to_strs(asset_ip_addresses),
+        asset_mac_addresses=click.str_to_strs(asset_mac_addresses),
         min_asset_group_create_time=hodgepodge.time.to_datetime(min_asset_group_create_time),
         max_asset_group_create_time=hodgepodge.time.to_datetime(max_asset_group_create_time),
         min_asset_group_last_update_time=hodgepodge.time.to_datetime(min_asset_group_last_update_time),
         max_asset_group_last_update_time=hodgepodge.time.to_datetime(max_asset_group_last_update_time),
-        limit=limit,
     )
-    count = sum(1 for _ in rows)
-    click.echo(count)
+    click.echo(n)
+
+
+@asset_groups.command()
+@click.option('--asset-group-ids', required=True)
+@click.pass_context
+def delete_asset_groups(ctx: click.Context, asset_group_ids: str):
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    asset_group_ids = [row['id'] for row in api.iter_asset_groups(asset_group_ids=click.str_to_ints(asset_group_ids))]
+    if asset_group_ids:
+        api.delete_asset_groups(asset_group_ids)

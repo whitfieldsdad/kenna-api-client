@@ -1,8 +1,7 @@
 from kenna.api import Kenna
 
+import kenna.cli.click as click
 import hodgepodge.time
-import hodgepodge.click
-import click
 
 
 @click.group()
@@ -15,10 +14,10 @@ def fixes(_):
 @click.option('--fix-id', type=int, required=True)
 @click.pass_context
 def get_fix(ctx: click.Context, fix_id: int):
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     row = api.get_fix(fix_id=fix_id)
     if row:
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @fixes.command()
@@ -60,26 +59,26 @@ def get_fixes(
         max_fix_last_update_time: str,
         limit: int):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     for row in api.iter_fixes(
-        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
-        fix_names=hodgepodge.click.str_to_list_of_str(fix_names),
-        fix_vendors=hodgepodge.click.str_to_list_of_str(fix_vendors),
-        cve_ids=hodgepodge.click.str_to_list_of_str(cve_ids),
-        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
-        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
-        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
-        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
+        fix_ids=click.str_to_ints(fix_ids),
+        fix_names=click.str_to_strs(fix_names),
+        fix_vendors=click.str_to_strs(fix_vendors),
+        cve_ids=click.str_to_strs(cve_ids),
+        asset_ids=click.str_to_ints(asset_ids),
+        asset_hostnames=click.str_to_strs(asset_hostnames),
+        asset_ip_addresses=click.str_to_strs(asset_ip_addresses),
+        asset_mac_addresses=click.str_to_strs(asset_mac_addresses),
+        asset_group_ids=click.str_to_ints(asset_group_ids),
+        asset_group_names=click.str_to_strs(asset_group_names),
+        asset_tags=click.str_to_strs(asset_tags),
         min_fix_create_time=hodgepodge.time.to_datetime(min_fix_create_time),
         max_fix_create_time=hodgepodge.time.to_datetime(max_fix_create_time),
         min_fix_last_update_time=hodgepodge.time.to_datetime(min_fix_last_update_time),
         max_fix_last_update_time=hodgepodge.time.to_datetime(max_fix_last_update_time),
         limit=limit,
     ):
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @fixes.command()
@@ -100,7 +99,6 @@ def get_fixes(
 @click.option('--max-fix-create-time')
 @click.option('--min-fix-last-update-time')
 @click.option('--max-fix-last-update-time')
-@click.option('--limit', type=int)
 @click.pass_context
 def count_fixes(
         ctx: click.Context,
@@ -118,27 +116,24 @@ def count_fixes(
         min_fix_create_time: str,
         max_fix_create_time: str,
         min_fix_last_update_time: str,
-        max_fix_last_update_time: str,
-        limit: int):
+        max_fix_last_update_time: str):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    rows = api.iter_fixes(
-        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
-        fix_names=hodgepodge.click.str_to_list_of_str(fix_names),
-        fix_vendors=hodgepodge.click.str_to_list_of_str(fix_vendors),
-        cve_ids=hodgepodge.click.str_to_list_of_str(cve_ids),
-        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
-        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
-        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
-        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    n = api.count_fixes(
+        fix_ids=click.str_to_ints(fix_ids),
+        fix_names=click.str_to_strs(fix_names),
+        fix_vendors=click.str_to_strs(fix_vendors),
+        cve_ids=click.str_to_strs(cve_ids),
+        asset_ids=click.str_to_ints(asset_ids),
+        asset_hostnames=click.str_to_strs(asset_hostnames),
+        asset_ip_addresses=click.str_to_strs(asset_ip_addresses),
+        asset_mac_addresses=click.str_to_strs(asset_mac_addresses),
+        asset_group_ids=click.str_to_ints(asset_group_ids),
+        asset_group_names=click.str_to_strs(asset_group_names),
+        asset_tags=click.str_to_strs(asset_tags),
         min_fix_create_time=hodgepodge.time.to_datetime(min_fix_create_time),
         max_fix_create_time=hodgepodge.time.to_datetime(max_fix_create_time),
         min_fix_last_update_time=hodgepodge.time.to_datetime(min_fix_last_update_time),
         max_fix_last_update_time=hodgepodge.time.to_datetime(max_fix_last_update_time),
-        limit=limit,
     )
-    count = sum(1 for _ in rows)
-    click.echo(count)
+    click.echo(n)

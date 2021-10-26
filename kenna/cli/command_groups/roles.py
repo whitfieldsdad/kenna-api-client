@@ -1,8 +1,6 @@
 from kenna.api import Kenna
 
-import click
-
-import hodgepodge.click
+import kenna.cli.click as click
 import hodgepodge.types
 import hodgepodge.time
 
@@ -14,13 +12,26 @@ def roles(_):
 
 
 @roles.command()
+@click.option('--role-name', required=True)
+@click.option('--access-level', required=True, help="One of [read|write]")
+@click.pass_context
+def create_role(ctx: click.Context, role_name: str, access_level: str):
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    role_id = api.create_role(
+        role_name=role_name,
+        access_level=access_level,
+    )
+    click.echo(role_id)
+
+
+@roles.command()
 @click.option('--role-id', type=int, required=True)
 @click.pass_context
 def get_role(ctx: click.Context, role_id: int):
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     row = api.get_role(role_id=role_id)
     if row:
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @roles.command()
@@ -36,6 +47,8 @@ def get_role(ctx: click.Context, role_id: int):
 @click.option('--max-role-create-time')
 @click.option('--min-role-last-update-time')
 @click.option('--max-role-last-update-time')
+@click.option('--hide-active-roles/--show-active-roles', default=False)
+@click.option('--hide-inactive-roles/--show-inactive-roles', default=False)
 @click.option('--limit', type=int)
 @click.pass_context
 def get_roles(
@@ -52,25 +65,30 @@ def get_roles(
         max_role_create_time: str,
         min_role_last_update_time: str,
         max_role_last_update_time: str,
+        hide_active_roles: bool,
+        hide_inactive_roles: bool,
         limit: int):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    for row in api.iter_roles(
-        role_ids=hodgepodge.click.str_to_list_of_int(role_ids),
-        role_names=hodgepodge.click.str_to_list_of_str(role_names),
-        role_types=hodgepodge.click.str_to_list_of_str(role_types),
-        role_access_levels=hodgepodge.click.str_to_list_of_str(role_access_levels),
-        role_custom_permissions=hodgepodge.click.str_to_list_of_str(role_custom_permissions),
-        user_ids=hodgepodge.click.str_to_list_of_int(user_ids),
-        user_email_addresses=hodgepodge.click.str_to_list_of_str(user_email_addresses),
-        user_names=hodgepodge.click.str_to_list_of_str(user_names),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    rows = api.iter_roles(
+        role_ids=click.str_to_ints(role_ids),
+        role_names=click.str_to_strs(role_names),
+        role_types=click.str_to_strs(role_types),
+        role_access_levels=click.str_to_strs(role_access_levels),
+        role_custom_permissions=click.str_to_strs(role_custom_permissions),
+        user_ids=click.str_to_ints(user_ids),
+        user_email_addresses=click.str_to_strs(user_email_addresses),
+        user_names=click.str_to_strs(user_names),
         min_role_create_time=hodgepodge.time.to_datetime(min_role_create_time),
         max_role_create_time=hodgepodge.time.to_datetime(max_role_create_time),
         min_role_last_update_time=hodgepodge.time.to_datetime(min_role_last_update_time),
         max_role_last_update_time=hodgepodge.time.to_datetime(max_role_last_update_time),
+        hide_active_roles=hide_active_roles,
+        hide_inactive_roles=hide_inactive_roles,
         limit=limit,
-    ):
-        hodgepodge.click.echo_as_json(row)
+    )
+    for row in rows:
+        click.echo(row, **ctx.obj['config']['kenna']['cli'])
 
 
 @roles.command()
@@ -86,7 +104,8 @@ def get_roles(
 @click.option('--max-role-create-time')
 @click.option('--min-role-last-update-time')
 @click.option('--max-role-last-update-time')
-@click.option('--limit', type=int)
+@click.option('--hide-active-roles/--show-active-roles', default=False)
+@click.option('--hide-inactive-roles/--show-inactive-roles', default=False)
 @click.pass_context
 def count_roles(
         ctx: click.Context,
@@ -102,23 +121,32 @@ def count_roles(
         max_role_create_time: str,
         min_role_last_update_time: str,
         max_role_last_update_time: str,
-        limit: int):
+        hide_active_roles: bool,
+        hide_inactive_roles: bool):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    rows = api.iter_roles(
-        role_ids=hodgepodge.click.str_to_list_of_int(role_ids),
-        role_names=hodgepodge.click.str_to_list_of_str(role_names),
-        role_types=hodgepodge.click.str_to_list_of_str(role_types),
-        role_access_levels=hodgepodge.click.str_to_list_of_str(role_access_levels),
-        role_custom_permissions=hodgepodge.click.str_to_list_of_str(role_custom_permissions),
-        user_ids=hodgepodge.click.str_to_list_of_int(user_ids),
-        user_email_addresses=hodgepodge.click.str_to_list_of_str(user_email_addresses),
-        user_names=hodgepodge.click.str_to_list_of_str(user_names),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    n = api.count_roles(
+        role_ids=click.str_to_ints(role_ids),
+        role_names=click.str_to_strs(role_names),
+        role_types=click.str_to_strs(role_types),
+        role_access_levels=click.str_to_strs(role_access_levels),
+        role_custom_permissions=click.str_to_strs(role_custom_permissions),
+        user_ids=click.str_to_ints(user_ids),
+        user_email_addresses=click.str_to_strs(user_email_addresses),
+        user_names=click.str_to_strs(user_names),
         min_role_create_time=hodgepodge.time.to_datetime(min_role_create_time),
         max_role_create_time=hodgepodge.time.to_datetime(max_role_create_time),
         min_role_last_update_time=hodgepodge.time.to_datetime(min_role_last_update_time),
         max_role_last_update_time=hodgepodge.time.to_datetime(max_role_last_update_time),
-        limit=limit,
+        hide_active_roles=hide_active_roles,
+        hide_inactive_roles=hide_inactive_roles,
     )
-    count = sum(1 for _ in rows)
-    click.echo(count)
+    click.echo(n)
+
+
+@roles.command()
+@click.option('--role-ids')
+@click.pass_context
+def delete_roles(ctx: click.Context, role_ids: str):
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    api.delete_roles(role_ids=click.str_to_ints(role_ids))

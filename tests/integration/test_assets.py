@@ -15,12 +15,12 @@ class AssetIntegrationTestCases(TestCase):
 
         cls.kenna_api = Kenna()
         try:
-            next(cls.kenna_api.iter_asset_groups())
+            next(cls.kenna_api.iter_assets(limit=1))
         except StopIteration:
             raise unittest.SkipTest("No assets found")
 
     def test_get_assets(self):
-        assets = self.kenna_api.get_assets(limit=1)
+        assets = list(self.kenna_api.iter_assets(limit=1))
         self.assertGreater(len(assets), 0)
         self.assertTrue(all(isinstance(asset, dict) for asset in assets))
 
@@ -31,3 +31,6 @@ class AssetIntegrationTestCases(TestCase):
         b = self.kenna_api.get_asset(asset_id=a['id'])
         self.assertIsNotNone(b)
         self.assertEqual(a['id'], b['id'])
+
+    def test_count_assets(self):
+        _ = self.kenna_api.count_assets()

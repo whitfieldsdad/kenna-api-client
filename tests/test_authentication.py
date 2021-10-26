@@ -1,8 +1,8 @@
 from unittest import TestCase
-from kenna.error import MissingCredentialsError, InvalidCredentialsError
 from kenna.authentication import API_KEY_LENGTH
 
 import kenna.authentication
+from kenna.errors import MissingCredentialsError, InvalidCredentialsError
 
 
 class AuthenticationTestCases(TestCase):

@@ -1,31 +1,17 @@
+import logging
+
+#: Logging.
+DEFAULT_LOG_LEVEL = logging.DEBUG
+
+#: Pagination.
 MAX_PAGES_ALLOWED_BY_API = 20
 
-APPLICATIONS = 'applications'
-ASSETS = 'assets'
-ASSET_GROUPS = 'asset_groups'
-CONNECTORS = 'connectors'
-CONNECTOR_RUNS = 'connector_runs'
-DASHBOARD_GROUPS = 'dashboard_groups'
-FIXES = 'fixes'
-ROLES = 'roles'
-USERS = 'users'
-VULNERABILITIES = 'vulnerabilities'
-VULNERABILITY_DEFINITIONS = 'vulnerability_definitions'
+PAGE_SIZE_FOR_VULNERABILITIES = 5000
+PAGE_SIZE_FOR_ASSETS = 500
+PAGE_SIZE_FOR_ASSET_GROUPS = 100
+PAGE_SIZE_FOR_FIXES = 100
 
-COLLECTION_NAMES = [
-    APPLICATIONS,
-    ASSETS,
-    ASSET_GROUPS,
-    CONNECTORS,
-    CONNECTOR_RUNS,
-    DASHBOARD_GROUPS,
-    FIXES,
-    ROLES,
-    USERS,
-    VULNERABILITIES,
-    VULNERABILITY_DEFINITIONS,
-]
-
+#: Object types.
 APPLICATION = 'application'
 ASSET = 'asset'
 ASSET_GROUP = 'asset_group'
@@ -52,3 +38,77 @@ OBJECT_TYPES = [
     VULNERABILITY_DEFINITION,
 ]
 
+#: Collection types.
+APPLICATIONS = 'applications'
+ASSETS = 'assets'
+ASSET_GROUPS = 'asset_groups'
+CONNECTORS = 'connectors'
+CONNECTOR_RUNS = 'connector_runs'
+DASHBOARD_GROUPS = 'dashboard_groups'
+FIXES = 'fixes'
+ROLES = 'roles'
+USERS = 'users'
+VULNERABILITIES = 'vulnerabilities'
+VULNERABILITY_DEFINITIONS = 'vulnerability_definitions'
+
+COLLECTION_TYPES = [
+    APPLICATIONS,
+    ASSETS,
+    ASSET_GROUPS,
+    CONNECTORS,
+    CONNECTOR_RUNS,
+    DASHBOARD_GROUPS,
+    FIXES,
+    ROLES,
+    USERS,
+    VULNERABILITIES,
+    VULNERABILITY_DEFINITIONS,
+]
+
+OBJECT_TYPES_TO_COLLECTION_TYPES = {
+    APPLICATION: APPLICATIONS,
+    ASSET: ASSETS,
+    ASSET_GROUP: ASSET_GROUPS,
+    CONNECTOR: CONNECTORS,
+    CONNECTOR_RUN: CONNECTOR_RUNS,
+    DASHBOARD_GROUP: DASHBOARD_GROUPS,
+    FIX: FIXES,
+    ROLE: ROLES,
+    USER: USERS,
+    VULNERABILITY: VULNERABILITIES,
+    VULNERABILITY_DEFINITION: VULNERABILITY_DEFINITIONS,
+}
+COLLECTION_TYPES_TO_OBJECT_TYPES = dict((v, k) for (k, v) in OBJECT_TYPES_TO_COLLECTION_TYPES.items())
+
+#: Data export types.
+DATA_EXPORT_TYPES = [
+    ASSET,
+    VULNERABILITY,
+    FIX,
+]
+
+#: Data export statuses.
+RUNNING = 'running'
+DONE = 'done'
+
+DATA_EXPORT_STATUSES = [
+    RUNNING,
+    DONE,
+]
+
+#: Data export formats.
+JSON = 'json'
+JSONL = 'jsonl'
+XML = 'xml'
+
+DATA_EXPORT_FORMATS = [
+    JSON,
+    JSONL,
+    XML,
+]
+
+#: Access levels.
+READ = 'read'
+WRITE = 'write'
+
+DEFAULT_ACCESS_LEVEL = 'read'

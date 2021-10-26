@@ -1,5 +1,5 @@
 from typing import Optional
-from kenna.error import InvalidRegionError
+from kenna.errors import InvalidRegionError
 
 GLOBAL = "global"
 CA = "ca"

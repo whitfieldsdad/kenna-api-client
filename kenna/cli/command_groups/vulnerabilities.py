@@ -1,9 +1,7 @@
 from kenna.api import Kenna
 
-import click
-
+import kenna.cli.click as click
 import hodgepodge.time
-import hodgepodge.click
 import hodgepodge.types
 
 
@@ -17,10 +15,10 @@ def vulnerabilities(_):
 @click.option('--vulnerability-id', type=int, required=True)
 @click.pass_context
 def get_vulnerability(ctx: click.Context, vulnerability_id: int):
-    api = Kenna(**ctx.obj['kenna']['config'])
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
     row = api.get_vulnerability(vulnerability_id=vulnerability_id)
     if row:
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row)
 
 
 @vulnerabilities.command()
@@ -78,20 +76,20 @@ def get_vulnerabilities(
         max_patch_due_date: str,
         limit: int):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    for row in api.get_vulnerabilities(
-        vulnerability_ids=hodgepodge.click.str_to_list_of_int(vulnerability_ids),
-        cve_ids=hodgepodge.click.str_to_list_of_str(cve_ids),
-        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
-        fix_names=hodgepodge.click.str_to_list_of_str(fix_names),
-        fix_vendors=hodgepodge.click.str_to_list_of_str(fix_vendors),
-        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
-        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
-        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
-        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    for row in api.iter_vulnerabilities(
+        vulnerability_ids=click.str_to_ints(vulnerability_ids),
+        cve_ids=click.str_to_strs(cve_ids),
+        fix_ids=click.str_to_ints(fix_ids),
+        fix_names=click.str_to_strs(fix_names),
+        fix_vendors=click.str_to_strs(fix_vendors),
+        asset_ids=click.str_to_ints(asset_ids),
+        asset_hostnames=click.str_to_strs(asset_hostnames),
+        asset_ip_addresses=click.str_to_strs(asset_ip_addresses),
+        asset_mac_addresses=click.str_to_strs(asset_mac_addresses),
+        asset_group_ids=click.str_to_ints(asset_group_ids),
+        asset_group_names=click.str_to_strs(asset_group_names),
+        asset_tags=click.str_to_strs(asset_tags),
         min_vulnerability_risk_meter_score=min_vulnerability_risk_meter_score,
         max_vulnerability_risk_meter_score=max_vulnerability_risk_meter_score,
         min_vulnerability_first_seen_time=hodgepodge.time.to_datetime(min_vulnerability_first_seen_time),
@@ -106,7 +104,7 @@ def get_vulnerabilities(
         max_patch_due_date=hodgepodge.time.to_datetime(max_patch_due_date),
         limit=limit,
     ):
-        hodgepodge.click.echo_as_json(row)
+        click.echo(row)
 
 
 @vulnerabilities.command()
@@ -134,9 +132,8 @@ def get_vulnerabilities(
 @click.option('--max-patch-publish-time')
 @click.option('--min-patch-due-date')
 @click.option('--max-patch-due-date')
-@click.option('--limit', type=int)
 @click.pass_context
-def get_vulnerabilities(
+def count_vulnerabilities(
         ctx: click.Context,
         vulnerability_ids: str,
         cve_ids: str,
@@ -161,23 +158,22 @@ def get_vulnerabilities(
         min_patch_publish_time: str,
         max_patch_publish_time: str,
         min_patch_due_date: str,
-        max_patch_due_date: str,
-        limit: int):
+        max_patch_due_date: str):
 
-    api = Kenna(**ctx.obj['kenna']['config'])
-    rows = api.get_vulnerabilities(
-        vulnerability_ids=hodgepodge.click.str_to_list_of_int(vulnerability_ids),
-        cve_ids=hodgepodge.click.str_to_list_of_str(cve_ids),
-        fix_ids=hodgepodge.click.str_to_list_of_int(fix_ids),
-        fix_names=hodgepodge.click.str_to_list_of_str(fix_names),
-        fix_vendors=hodgepodge.click.str_to_list_of_str(fix_vendors),
-        asset_ids=hodgepodge.click.str_to_list_of_int(asset_ids),
-        asset_hostnames=hodgepodge.click.str_to_list_of_str(asset_hostnames),
-        asset_ip_addresses=hodgepodge.click.str_to_list_of_str(asset_ip_addresses),
-        asset_mac_addresses=hodgepodge.click.str_to_list_of_str(asset_mac_addresses),
-        asset_group_ids=hodgepodge.click.str_to_list_of_int(asset_group_ids),
-        asset_group_names=hodgepodge.click.str_to_list_of_str(asset_group_names),
-        asset_tags=hodgepodge.click.str_to_list_of_str(asset_tags),
+    api = Kenna(**ctx.obj['config']['kenna']['api'])
+    n = api.count_vulnerabilities(
+        vulnerability_ids=click.str_to_ints(vulnerability_ids),
+        cve_ids=click.str_to_strs(cve_ids),
+        fix_ids=click.str_to_ints(fix_ids),
+        fix_names=click.str_to_strs(fix_names),
+        fix_vendors=click.str_to_strs(fix_vendors),
+        asset_ids=click.str_to_ints(asset_ids),
+        asset_hostnames=click.str_to_strs(asset_hostnames),
+        asset_ip_addresses=click.str_to_strs(asset_ip_addresses),
+        asset_mac_addresses=click.str_to_strs(asset_mac_addresses),
+        asset_group_ids=click.str_to_ints(asset_group_ids),
+        asset_group_names=click.str_to_strs(asset_group_names),
+        asset_tags=click.str_to_strs(asset_tags),
         min_vulnerability_risk_meter_score=min_vulnerability_risk_meter_score,
         max_vulnerability_risk_meter_score=max_vulnerability_risk_meter_score,
         min_vulnerability_first_seen_time=hodgepodge.time.to_datetime(min_vulnerability_first_seen_time),
@@ -190,7 +186,5 @@ def get_vulnerabilities(
         max_patch_publish_time=hodgepodge.time.to_datetime(max_patch_publish_time),
         min_patch_due_date=hodgepodge.time.to_datetime(min_patch_due_date),
         max_patch_due_date=hodgepodge.time.to_datetime(max_patch_due_date),
-        limit=limit,
     )
-    count = sum(1 for _ in rows)
-    click.echo(count)
+    click.echo(n)

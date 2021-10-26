@@ -1,4 +1,4 @@
-from kenna.error import MissingCredentialsError, InvalidCredentialsError
+from kenna.errors import MissingCredentialsError, InvalidCredentialsError
 
 import os
 

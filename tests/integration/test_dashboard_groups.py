@@ -15,12 +15,12 @@ class DashboardGroupIntegrationTestCases(TestCase):
 
         cls.kenna_api = Kenna()
         try:
-            next(cls.kenna_api.iter_asset_groups())
+            next(cls.kenna_api.iter_dashboard_groups(limit=1))
         except StopIteration:
             raise unittest.SkipTest("No dashboard groups found")
 
     def test_get_dashboard_groups(self):
-        dashboard_groups = self.kenna_api.get_dashboard_groups(limit=1)
+        dashboard_groups = list(self.kenna_api.iter_dashboard_groups(limit=1))
         self.assertGreater(len(dashboard_groups), 0)
         self.assertTrue(all(isinstance(asset, dict) for asset in dashboard_groups))
 
@@ -31,3 +31,6 @@ class DashboardGroupIntegrationTestCases(TestCase):
         b = self.kenna_api.get_dashboard_group(dashboard_group_id=a['id'])
         self.assertIsNotNone(b)
         self.assertEqual(a['id'], b['id'])
+
+    def test_count_dashboard_groups(self):
+        _ = self.kenna_api.count_dashboard_groups()

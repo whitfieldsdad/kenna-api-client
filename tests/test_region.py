@@ -1,5 +1,5 @@
 from unittest import TestCase
-from kenna.error import InvalidRegionError
+from kenna.errors import InvalidRegionError
 from kenna.region import ALL_ENDPOINTS, ALL_REGIONS, GLOBAL, US, EU, CA
 
 import kenna.region
